@@ -193,11 +193,13 @@ button.isOff{opacity:.55}
 #bubble2{left:325px;top:475px}
 
 #agencyBox{
+  position:absolute;
   left:25px;
   top:620px;
   width:78px;
   height:78px;
   z-index:6;
+  pointer-events:none;
 }
 
 #agencyBox img{
@@ -309,7 +311,7 @@ button.isOff{opacity:.55}
   </div>
 
   <div class="help">
-    Le logo organisation est fixe via <strong>AkaTsuki.png</strong>. Mets ce fichier dans le même dossier que ce HTML.
+    Le logo fixe doit s’appeler <strong>agency.png</strong> et être dans le même dossier que ce fichier HTML.
   </div>
 </div>
 
@@ -349,7 +351,7 @@ button.isOff{opacity:.55}
     </div>
 
     <div id="agencyBox">
-      <img id="agencyImg" src="agency.png" alt="Logo organisation">
+      <img id="agencyImg" src="agency.png" alt="Logo organisation" crossorigin="anonymous">
     </div>
 
     <div class="grain"></div>
@@ -478,7 +480,9 @@ function renderTextToImg(img,{
 }
 
 async function renderAll(){
-  if(document.fonts && document.fonts.ready) await document.fonts.ready;
+  if(document.fonts && document.fonts.ready){
+    await document.fonts.ready;
+  }
 
   const mainColor = $("mainColor").value;
   const vsColor = $("vsColor").value;
@@ -573,7 +577,11 @@ function setBubbleSize(id,size){
 
   const cx = size / 2;
   const r = size * .39;
-  path.setAttribute("d",`M${cx},${cx} m-${r},0 a${r},${r} 0 1,1 ${r*2},0 a${r},${r} 0 1,1 -${r*2},0`);
+
+  path.setAttribute(
+    "d",
+    `M${cx},${cx} m-${r},0 a${r},${r} 0 1,1 ${r*2},0 a${r},${r} 0 1,1 -${r*2},0`
+  );
 
   inner.style.inset = Math.round(size * .14) + "px";
 }
@@ -790,28 +798,41 @@ $("boostToggleBtn").addEventListener("click",()=>{
 });
 
 $("downloadBtn").addEventListener("click",async()=>{
-  const poster = $("poster");
+  try{
+    const poster = $("poster");
 
-  await renderAll();
+    await renderAll();
 
-  if(document.fonts && document.fonts.ready){
-    await document.fonts.ready;
+    if(document.fonts && document.fonts.ready){
+      await document.fonts.ready;
+    }
+
+    await waitForImages(poster);
+
+    const canvas = await html2canvas(poster,{
+      backgroundColor:null,
+      useCORS:true,
+      allowTaint:true,
+      scale:3,
+      width:493,
+      height:700,
+      windowWidth:document.documentElement.clientWidth,
+      windowHeight:document.documentElement.clientHeight
+    });
+
+    const dataURL = canvas.toDataURL("image/png");
+
+    const a = document.createElement("a");
+    a.href = dataURL;
+    a.download = "affiche-match-officiel.png";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+  }catch(err){
+    console.error(err);
+    alert("Erreur export PNG. Vérifie que agency.png est bien dans le même dossier que ton fichier HTML.");
   }
-
-  await waitForImages(poster);
-
-  const canvas = await html2canvas(poster,{
-    backgroundColor:null,
-    useCORS:true,
-    scale:3,
-    width:493,
-    height:700
-  });
-
-  const a = document.createElement("a");
-  a.href = canvas.toDataURL("image/png");
-  a.download = "affiche-match-officiel.png";
-  a.click();
 });
 
 $("resetBtn").addEventListener("click",()=>{
