@@ -6,12 +6,13 @@
 <title>Générateur affiche Match Officiel</title>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat:wght@800;900&display=swap");
 
 :root{
   --poster-w:493px;
   --poster-h:700px;
   --main-font:"Lobster", cursive;
+  --circle-font:"Montserrat", Arial, sans-serif;
 }
 
 *{box-sizing:border-box}
@@ -39,10 +40,7 @@ body{
   padding:16px;
 }
 
-h1{
-  margin:0 0 16px;
-  font-size:21px;
-}
+h1{margin:0 0 16px;font-size:21px}
 
 .row{
   display:grid;
@@ -57,10 +55,7 @@ h1{
   margin-bottom:12px;
 }
 
-label{
-  font-size:12px;
-  font-weight:800;
-}
+label{font-size:12px;font-weight:800}
 
 input,button{
   width:100%;
@@ -72,14 +67,8 @@ input,button{
   font-weight:700;
 }
 
-input[type=color]{
-  height:42px;
-  padding:4px;
-}
-
-input[type=range]{
-  padding:0;
-}
+input[type=color]{height:42px;padding:4px}
+input[type=range]{padding:0}
 
 button{
   cursor:pointer;
@@ -93,9 +82,7 @@ button.secondary{
   color:white;
 }
 
-button.isOff{
-  opacity:.55;
-}
+button.isOff{opacity:.55}
 
 .btns{
   display:grid;
@@ -146,9 +133,7 @@ button.isOff{
   touch-action:none;
 }
 
-.draggable:active{
-  cursor:grabbing;
-}
+.draggable:active{cursor:grabbing}
 
 .textImg{
   display:block;
@@ -193,14 +178,15 @@ button.isOff{
 
 .circleText text{
   fill:#fff;
-  font-family:Impact,Arial Black,sans-serif;
-  font-size:15px;
+  font-family:var(--circle-font);
+  font-size:13px;
   font-weight:900;
-  letter-spacing:.8px;
+  letter-spacing:.5px;
   paint-order:stroke;
   stroke:#000;
-  stroke-width:4px;
+  stroke-width:3px;
   stroke-linejoin:round;
+  text-transform:uppercase;
 }
 
 #bubble1{left:45px;top:305px}
@@ -211,6 +197,7 @@ button.isOff{
   top:620px;
   width:78px;
   height:78px;
+  z-index:6;
 }
 
 #agencyBox img{
@@ -218,11 +205,10 @@ button.isOff{
   height:100%;
   border-radius:50%;
   object-fit:cover;
+  display:block;
 }
 
-.hiddenPosterElement{
-  display:none!important;
-}
+.hiddenPosterElement{display:none!important}
 
 .grain{
   position:absolute;
@@ -264,40 +250,35 @@ button.isOff{
     </div>
   </div>
 
-  <div class="field">
-    <label>Logo organisation bas gauche</label>
-    <input id="agencyInput" type="file" accept="image/*">
-  </div>
-
   <div class="row">
     <div class="field">
-      <label>Texte bulle 1</label>
-      <input id="handle1Text" value="@Créateur 1">
+      <label>Texte bulle créa 1</label>
+      <input id="handle1Text" value="@créa 1">
     </div>
     <div class="field">
-      <label>Texte bulle 2</label>
-      <input id="handle2Text" value="@Créateur 2">
+      <label>Texte bulle créa 2</label>
+      <input id="handle2Text" value="@créa 2">
     </div>
   </div>
 
   <div class="row">
     <div class="field">
-      <label>Taille rond 1</label>
+      <label>Taille rond créa 1</label>
       <input id="bubble1Size" type="range" min="80" max="190" value="126">
     </div>
     <div class="field">
-      <label>Taille rond 2</label>
+      <label>Taille rond créa 2</label>
       <input id="bubble2Size" type="range" min="80" max="190" value="126">
     </div>
   </div>
 
   <div class="row">
     <div class="field">
-      <label>Rotation texte bulle 1</label>
+      <label>Rotation texte créa 1</label>
       <input id="bubble1Angle" type="range" min="0" max="360" value="110">
     </div>
     <div class="field">
-      <label>Rotation texte bulle 2</label>
+      <label>Rotation texte créa 2</label>
       <input id="bubble2Angle" type="range" min="0" max="360" value="110">
     </div>
   </div>
@@ -328,7 +309,7 @@ button.isOff{
   </div>
 
   <div class="help">
-    Tu peux déplacer le titre, la date, l’heure, VS, les bulles et le logo en glissant avec la souris.
+    Le logo organisation est fixe via <strong>agency.png</strong>. Mets ce fichier dans le même dossier que ce HTML.
   </div>
 </div>
 
@@ -349,7 +330,7 @@ button.isOff{
           <path id="circlePath1" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
         </defs>
         <text>
-          <textPath id="circleText1" href="#circlePath1" startOffset="50%" text-anchor="middle">@pierrotlefouuuu</textPath>
+          <textPath id="circleText1" href="#circlePath1" startOffset="50%" text-anchor="middle">@créa 1</textPath>
         </text>
       </svg>
       <div class="bubbleInner"><img id="avatar1Img"></div>
@@ -361,14 +342,14 @@ button.isOff{
           <path id="circlePath2" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
         </defs>
         <text>
-          <textPath id="circleText2" href="#circlePath2" startOffset="50%" text-anchor="middle">@www.rafiki.com</textPath>
+          <textPath id="circleText2" href="#circlePath2" startOffset="50%" text-anchor="middle">@créa 2</textPath>
         </text>
       </svg>
       <div class="bubbleInner"><img id="avatar2Img"></div>
     </div>
 
-    <div id="agencyBox" class="draggable">
-      <img id="agencyImg">
+    <div id="agencyBox">
+      <img id="agencyImg" src="agency.png" alt="Logo organisation">
     </div>
 
     <div class="grain"></div>
@@ -381,12 +362,12 @@ button.isOff{
 const $ = id => document.getElementById(id);
 
 const state = {
-  boost: false,
-  showTitle: true,
-  showDate: true,
-  showTime: true,
-  showVs: true,
-  showBubbles: true
+  boost:false,
+  showTitle:true,
+  showDate:true,
+  showTime:true,
+  showVs:true,
+  showBubbles:true
 };
 
 const defaultPositions = {
@@ -396,8 +377,7 @@ const defaultPositions = {
   vsBox:{x:185,y:455},
   boostBox:{x:95,y:600},
   bubble1:{x:45,y:305},
-  bubble2:{x:325,y:475},
-  agencyBox:{x:25,y:620}
+  bubble2:{x:325,y:475}
 };
 
 function fileToDataURL(file){
@@ -559,8 +539,8 @@ async function renderAll(){
     padX:24
   });
 
-  $("circleText1").textContent = $("handle1Text").value || "@créa1";
-  $("circleText2").textContent = $("handle2Text").value || "@créa2";
+  $("circleText1").textContent = $("handle1Text").value || "@créa 1";
+  $("circleText2").textContent = $("handle2Text").value || "@créa 2";
 
   applyBubbleControls();
   applyVisibility();
@@ -763,12 +743,6 @@ $("avatar1Input").addEventListener("change",()=>{
 $("avatar2Input").addEventListener("change",()=>{
   loadFile($("avatar2Input"),url=>{
     $("avatar2Img").src = url;
-  });
-});
-
-$("agencyInput").addEventListener("change",()=>{
-  loadFile($("agencyInput"),url=>{
-    $("agencyImg").src = url;
   });
 });
 
