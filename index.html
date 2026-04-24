@@ -662,8 +662,16 @@ function setBubbleSize(id,size){
 
 function applyAgencySize(){
   const size = Number($("agencySize").value);
-  $("agencyBox").style.width = size + "px";
-  $("agencyBox").style.height = size + "px";
+  const box = $("agencyBox");
+
+  box.style.width = size + "px";
+  box.style.height = size + "px";
+
+  const margin = 25;
+
+  box.style.left = margin + "px";
+  box.style.top = (700 - size - margin) + "px";
+}
 }
 
 function applyVisibility(){
