@@ -57,7 +57,7 @@ h1{margin:0 0 16px;font-size:21px}
 
 label{font-size:12px;font-weight:800}
 
-input,button{
+input,button,a.linkBtn{
   width:100%;
   padding:10px;
   border-radius:9px;
@@ -70,11 +70,15 @@ input,button{
 input[type=color]{height:42px;padding:4px}
 input[type=range]{padding:0}
 
-button{
+button,
+a.linkBtn{
   cursor:pointer;
   background:linear-gradient(#f8df7b,#c79a25);
   color:#1d1500;
   font-weight:1000;
+  text-align:center;
+  text-decoration:none;
+  display:block;
 }
 
 button.secondary{
@@ -276,6 +280,17 @@ button.isOff{opacity:.55}
 
   <div class="row">
     <div class="field">
+      <label>Taille texte bulle créa 1</label>
+      <input id="bubble1TextSize" type="range" min="8" max="28" value="13">
+    </div>
+    <div class="field">
+      <label>Taille texte bulle créa 2</label>
+      <input id="bubble2TextSize" type="range" min="8" max="28" value="13">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
       <label>Rotation texte créa 1</label>
       <input id="bubble1Angle" type="range" min="0" max="360" value="110">
     </div>
@@ -310,8 +325,12 @@ button.isOff{opacity:.55}
     <button id="resetBtn" class="secondary">Réinitialiser positions</button>
   </div>
 
+  <div class="btns">
+    <a class="linkBtn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">Ouvrir ChatGPT.com</a>
+  </div>
+
   <div class="help">
-    Le logo fixe doit s’appeler <strong>AkaTsuki.png</strong> et être dans le même dossier que ce fichier HTML.
+    Le logo fixe doit s’appeler <strong>agency.png</strong> et être dans le même dossier que ce fichier HTML.
   </div>
 </div>
 
@@ -556,12 +575,17 @@ function applyBubbleControls(){
   const size2 = Number($("bubble2Size").value);
   const angle1 = Number($("bubble1Angle").value);
   const angle2 = Number($("bubble2Angle").value);
+  const textSize1 = Number($("bubble1TextSize").value);
+  const textSize2 = Number($("bubble2TextSize").value);
 
   setBubbleSize("bubble1",size1);
   setBubbleSize("bubble2",size2);
 
   $("circleText1").setAttribute("startOffset", angle1 / 360 * 100 + "%");
   $("circleText2").setAttribute("startOffset", angle2 / 360 * 100 + "%");
+
+  $("circleText1").closest("text").style.fontSize = textSize1 + "px";
+  $("circleText2").closest("text").style.fontSize = textSize2 + "px";
 }
 
 function setBubbleSize(id,size){
@@ -646,6 +670,8 @@ function saveSettings(){
     vsColor:$("vsColor").value,
     bubble1Size:$("bubble1Size").value,
     bubble2Size:$("bubble2Size").value,
+    bubble1TextSize:$("bubble1TextSize").value,
+    bubble2TextSize:$("bubble2TextSize").value,
     bubble1Angle:$("bubble1Angle").value,
     bubble2Angle:$("bubble2Angle").value,
     state
@@ -664,6 +690,8 @@ function restoreSettings(){
     if(data.vsColor) $("vsColor").value = data.vsColor;
     if(data.bubble1Size) $("bubble1Size").value = data.bubble1Size;
     if(data.bubble2Size) $("bubble2Size").value = data.bubble2Size;
+    if(data.bubble1TextSize) $("bubble1TextSize").value = data.bubble1TextSize;
+    if(data.bubble2TextSize) $("bubble2TextSize").value = data.bubble2TextSize;
     if(data.bubble1Angle) $("bubble1Angle").value = data.bubble1Angle;
     if(data.bubble2Angle) $("bubble2Angle").value = data.bubble2Angle;
 
@@ -736,6 +764,20 @@ async function waitForImages(container){
   }));
 }
 
+function forceDownloadBlob(blob,filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+
+  setTimeout(()=>{
+    a.remove();
+    URL.revokeObjectURL(url);
+  },500);
+}
+
 $("bgInput").addEventListener("change",()=>{
   loadFile($("bgInput"),url=>{
     $("bg").style.backgroundImage = `url("${url}")`;
@@ -761,6 +803,8 @@ $("avatar2Input").addEventListener("change",()=>{
   "vsColor",
   "bubble1Size",
   "bubble2Size",
+  "bubble1TextSize",
+  "bubble2TextSize",
   "bubble1Angle",
   "bubble2Angle"
 ].forEach(id=>{
@@ -798,6 +842,10 @@ $("boostToggleBtn").addEventListener("click",()=>{
 });
 
 $("downloadBtn").addEventListener("click",async()=>{
+  const btn = $("downloadBtn");
+  btn.textContent = "Préparation...";
+  btn.disabled = true;
+
   try{
     const poster = $("poster");
 
@@ -816,22 +864,27 @@ $("downloadBtn").addEventListener("click",async()=>{
       scale:3,
       width:493,
       height:700,
-      windowWidth:document.documentElement.clientWidth,
-      windowHeight:document.documentElement.clientHeight
+      scrollX:0,
+      scrollY:0,
+      windowWidth:493,
+      windowHeight:700
     });
 
-    const dataURL = canvas.toDataURL("image/png");
+    canvas.toBlob(blob=>{
+      if(!blob){
+        alert("Impossible de créer le PNG.");
+        return;
+      }
 
-    const a = document.createElement("a");
-    a.href = dataURL;
-    a.download = "affiche-match-officiel.png";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+      forceDownloadBlob(blob,"affiche-match-officiel.png");
+    },"image/png");
 
   }catch(err){
     console.error(err);
-    alert("Erreur export PNG. Vérifie que agency.png est bien dans le même dossier que ton fichier HTML.");
+    alert("Erreur export PNG. Si le problème vient de agency.png, vérifie qu’il est dans le même dossier que le fichier HTML.");
+  }finally{
+    btn.textContent = "Télécharger PNG";
+    btn.disabled = false;
   }
 });
 
