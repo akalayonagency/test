@@ -88,6 +88,16 @@ button.secondary{
 
 button.isOff{opacity:.55}
 
+.akatsukiBtn{
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,255,255,.18),transparent 18%),
+    linear-gradient(135deg,#090909 0%,#230000 45%,#b00000 100%);
+  color:#fff;
+  border:1px solid rgba(255,0,0,.55);
+  box-shadow:0 0 18px rgba(180,0,0,.45);
+  letter-spacing:.3px;
+}
+
 .btns{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -326,11 +336,13 @@ button.isOff{opacity:.55}
   </div>
 
   <div class="btns">
-    <a class="linkBtn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">Ouvrir ChatGPT.com</a>
+    <a class="linkBtn akatsukiBtn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
+      ☁️ Rejoindre l’Akatsuki Organization avec ChatGPT
+    </a>
   </div>
 
   <div class="help">
-    Le logo fixe doit s’appeler <strong>agency.png</strong> et être dans le même dossier que ce fichier HTML.
+    Le logo fixe doit s’appeler <strong>AkaTsuki.png</strong> et être dans le même dossier que ce fichier HTML.
   </div>
 </div>
 
@@ -370,7 +382,7 @@ button.isOff{opacity:.55}
     </div>
 
     <div id="agencyBox">
-      <img id="agencyImg" src="agency.png" alt="Logo organisation" crossorigin="anonymous">
+      <img id="agencyImg" src="AkaTsuki.png" alt="Logo Akatsuki Organization">
     </div>
 
     <div class="grain"></div>
@@ -415,6 +427,33 @@ async function loadFile(input,callback){
   if(!file) return;
   const url = await fileToDataURL(file);
   callback(url);
+}
+
+async function localImageToDataURL(img){
+  try{
+    const response = await fetch(img.getAttribute("src"));
+    const blob = await response.blob();
+
+    return await new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }catch(e){
+    return null;
+  }
+}
+
+async function secureLocalImages(){
+  const agencyImg = $("agencyImg");
+
+  if(agencyImg && agencyImg.src && !agencyImg.src.startsWith("data:")){
+    const dataURL = await localImageToDataURL(agencyImg);
+    if(dataURL){
+      agencyImg.src = dataURL;
+    }
+  }
 }
 
 function renderTextToImg(img,{
@@ -764,18 +803,32 @@ async function waitForImages(container){
   }));
 }
 
-function forceDownloadBlob(blob,filename){
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
+function downloadCanvas(canvas,filename){
+  try{
+    canvas.toBlob(blob=>{
+      if(blob){
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
 
-  setTimeout(()=>{
-    a.remove();
-    URL.revokeObjectURL(url);
-  },500);
+        setTimeout(()=>{
+          a.remove();
+          URL.revokeObjectURL(url);
+        },500);
+      }else{
+        const dataURL = canvas.toDataURL("image/png");
+        const win = window.open();
+        win.document.write(`<img src="${dataURL}" style="width:100%">`);
+      }
+    },"image/png");
+  }catch(e){
+    const dataURL = canvas.toDataURL("image/png");
+    const win = window.open();
+    win.document.write(`<img src="${dataURL}" style="width:100%">`);
+  }
 }
 
 $("bgInput").addEventListener("change",()=>{
@@ -850,6 +903,7 @@ $("downloadBtn").addEventListener("click",async()=>{
     const poster = $("poster");
 
     await renderAll();
+    await secureLocalImages();
 
     if(document.fonts && document.fonts.ready){
       await document.fonts.ready;
@@ -859,7 +913,7 @@ $("downloadBtn").addEventListener("click",async()=>{
 
     const canvas = await html2canvas(poster,{
       backgroundColor:null,
-      useCORS:true,
+      useCORS:false,
       allowTaint:true,
       scale:3,
       width:493,
@@ -870,18 +924,11 @@ $("downloadBtn").addEventListener("click",async()=>{
       windowHeight:700
     });
 
-    canvas.toBlob(blob=>{
-      if(!blob){
-        alert("Impossible de créer le PNG.");
-        return;
-      }
-
-      forceDownloadBlob(blob,"affiche-match-officiel.png");
-    },"image/png");
+    downloadCanvas(canvas,"affiche-match-officiel.png");
 
   }catch(err){
     console.error(err);
-    alert("Erreur export PNG. Si le problème vient de agency.png, vérifie qu’il est dans le même dossier que le fichier HTML.");
+    alert("Erreur export PNG. Mets bien AkaTsuki.png dans le même dossier que ce fichier HTML. Si tu ouvres le fichier en local et que ça bloque encore, lance-le via un petit serveur local.");
   }finally{
     btn.textContent = "Télécharger PNG";
     btn.disabled = false;
@@ -897,6 +944,7 @@ document.querySelectorAll(".draggable").forEach(makeDraggable);
 
 restoreSettings();
 restorePositions();
+secureLocalImages();
 renderAll();
 </script>
 
