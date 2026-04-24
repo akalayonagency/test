@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Générateur affiche Match Officiel</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<style>
+:root{
+  --poster-w: 493px;
+  --poster-h: 700px;
+  --font-main: "Great Vibes", cursive;
+  --font-bold: Georgia, serif;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:transparent;
+  color:#fff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+body{
+  display:flex;
+  gap:24px;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:flex-start;
+  padding:24px;
+}
+
+.panel{
+  width:min(540px,95vw);
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:16px;
+  padding:16px;
+}
+
+.panel h1{
+  margin:0 0 14px;
+  font-size:20px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-bottom:12px;
+}
+
+label{
+  font-size:12px;
+  font-weight:700;
+}
+
+input,select,button{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.45);
+  color:#fff;
+}
+
+input[type="color"]{
+  height:42px;
+  padding:4px;
+}
+
+button{
+  cursor:pointer;
+  font-weight:900;
+  background:linear-gradient(180deg,#f7e08c,#c79724);
+  color:#1b1200;
+}
+
+button.secondary{
+  background:rgba(0,0,0,.45);
+  color:#fff;
+}
+
+.previewWrap{
+  width:min(520px,95vw);
+  display:flex;
+  justify-content:center;
+}
+
+.poster{
+  width:var(--poster-w);
+  height:var(--poster-h);
+  position:relative;
+  overflow:hidden;
+  background:#111;
+  box-shadow:0 20px 60px rgba(0,0,0,.65);
+  isolation:isolate;
+}
+
+.bg{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  z-index:0;
+}
+
+.redOverlay{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(255,60,0,.22),transparent 45%),
+    radial-gradient(circle at 50% 50%,transparent 35%,rgba(0,0,0,.5) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.05),rgba(0,0,0,.55));
+  mix-blend-mode:multiply;
+}
+
+.textImg{
+  position:absolute;
+  z-index:5;
+  pointer-events:none;
+  max-width:none;
+}
+
+#titleImg{
+  left:16px;
+  top:8px;
+  width:460px;
+}
+
+#dateImg{
+  left:126px;
+  top:126px;
+  width:285px;
+}
+
+#timeImg{
+  left:176px;
+  top:174px;
+  width:145px;
+}
+
+#vsImg{
+  left:202px;
+  top:438px;
+  width:92px;
+}
+
+#boostImg{
+  left:106px;
+  bottom:16px;
+  width:285px;
+}
+
+.creatorBadge{
+  position:absolute;
+  z-index:6;
+  width:122px;
+  height:122px;
+  border-radius:50%;
+  overflow:hidden;
+  border:3px solid #d7a72d;
+  box-shadow:0 8px 22px rgba(0,0,0,.65);
+  background:#222;
+}
+
+.creatorBadge img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+#creator1Badge{
+  left:40px;
+  top:302px;
+}
+
+#creator2Badge{
+  right:42px;
+  top:468px;
+}
+
+.handle{
+  position:absolute;
+  z-index:7;
+  font-size:22px;
+  font-weight:900;
+  color:white;
+  text-shadow:
+    3px 3px 0 #000,
+    -2px -2px 0 #000,
+    0 0 8px #000;
+  transform:rotate(-28deg);
+  white-space:nowrap;
+}
+
+#handle1Preview{
+  left:24px;
+  top:414px;
+}
+
+#handle2Preview{
+  right:20px;
+  top:582px;
+  transform:rotate(25deg);
+}
+
+#agencyBadge{
+  position:absolute;
+  left:24px;
+  bottom:22px;
+  width:76px;
+  height:76px;
+  border-radius:50%;
+  overflow:hidden;
+  z-index:6;
+}
+
+#agencyBadge img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.grain{
+  position:absolute;
+  inset:-20%;
+  z-index:10;
+  opacity:.12;
+  pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.4) 1px,transparent 1px);
+  background-size:6px 6px;
+  mix-blend-mode:overlay;
+}
+
+.btns{
+  display:flex;
+  gap:10px;
+}
+
+.btns button{
+  flex:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+  <h1>🥊 Générateur affiche Match Officiel</h1>
+
+  <div class="field">
+    <label>Image de fond</label>
+    <input id="bgInput" type="file" accept="image/*">
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Logo / avatar créa 1</label>
+      <input id="creator1Input" type="file" accept="image/*">
+    </div>
+    <div class="field">
+      <label>Logo / avatar créa 2</label>
+      <input id="creator2Input" type="file" accept="image/*">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Logo organisation bas gauche</label>
+    <input id="agencyInput" type="file" accept="image/*">
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Titre</label>
+      <input id="titleText" type="text" value="Match officiel">
+    </div>
+    <div class="field">
+      <label>Texte boost</label>
+      <input id="boostText" type="text" value="sans boost">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Date</label>
+      <input id="dateText" type="text" value="Jeudi 09 Avril">
+    </div>
+    <div class="field">
+      <label>Heure</label>
+      <input id="timeText" type="text" value="21 h 30">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>@ créa 1</label>
+      <input id="handle1" type="text" value="@pierrotlefouuuu">
+    </div>
+    <div class="field">
+      <label>@ créa 2</label>
+      <input id="handle2" type="text" value="@www.rafiki.com">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Couleur texte principal</label>
+      <input id="mainColor" type="color" value="#ffffff">
+    </div>
+    <div class="field">
+      <label>Couleur VS</label>
+      <input id="vsColor" type="color" value="#ff5a00">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Police</label>
+    <select id="fontSelect">
+      <option value='"Great Vibes", cursive' data-google="Great+Vibes" selected>Great Vibes</option>
+      <option value='"Lobster", cursive' data-google="Lobster">Lobster</option>
+      <option value='"Pacifico", cursive' data-google="Pacifico">Pacifico</option>
+      <option value='"Alex Brush", cursive' data-google="Alex+Brush">Alex Brush</option>
+      <option value='Georgia, serif'>Georgia</option>
+      <option value='Impact, sans-serif'>Impact</option>
+    </select>
+  </div>
+
+  <div class="btns">
+    <button id="downloadBtn">Télécharger PNG</button>
+    <button id="resetBtn" class="secondary">Réinitialiser</button>
+  </div>
+</div>
+
+<div class="previewWrap">
+  <div class="poster" id="poster">
+    <div class="bg" id="bg"></div>
+    <div class="redOverlay"></div>
+
+    <img id="titleImg" class="textImg" alt="">
+    <img id="dateImg" class="textImg" alt="">
+    <img id="timeImg" class="textImg" alt="">
+    <img id="vsImg" class="textImg" alt="">
+    <img id="boostImg" class="textImg" alt="">
+
+    <div class="creatorBadge" id="creator1Badge">
+      <img id="creator1Img" alt="">
+    </div>
+
+    <div class="creatorBadge" id="creator2Badge">
+      <img id="creator2Img" alt="">
+    </div>
+
+    <div id="handle1Preview" class="handle">@pierrotlefouuuu</div>
+    <div id="handle2Preview" class="handle">@www.rafiki.com</div>
+
+    <div id="agencyBadge">
+      <img id="agencyImg" alt="">
+    </div>
+
+    <div class="grain"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+const bgInput = document.getElementById("bgInput");
+const creator1Input = document.getElementById("creator1Input");
+const creator2Input = document.getElementById("creator2Input");
+const agencyInput = document.getElementById("agencyInput");
+
+const bg = document.getElementById("bg");
+const creator1Img = document.getElementById("creator1Img");
+const creator2Img = document.getElementById("creator2Img");
+const agencyImg = document.getElementById("agencyImg");
+
+const titleText = document.getElementById("titleText");
+const dateText = document.getElementById("dateText");
+const timeText = document.getElementById("timeText");
+const boostText = document.getElementById("boostText");
+const handle1 = document.getElementById("handle1");
+const handle2 = document.getElementById("handle2");
+
+const handle1Preview = document.getElementById("handle1Preview");
+const handle2Preview = document.getElementById("handle2Preview");
+
+const titleImg = document.getElementById("titleImg");
+const dateImg = document.getElementById("dateImg");
+const timeImg = document.getElementById("timeImg");
+const vsImg = document.getElementById("vsImg");
+const boostImg = document.getElementById("boostImg");
+
+const mainColor = document.getElementById("mainColor");
+const vsColor = document.getElementById("vsColor");
+const fontSelect = document.getElementById("fontSelect");
+
+const downloadBtn = document.getElementById("downloadBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+function ensureGoogleFontLoaded(value){
+  if(!value) return;
+  const id = "gf-" + value.replace(/[^a-z0-9]/gi,"");
+  if(document.getElementById(id)) return;
+
+  const link = document.createElement("link");
+  link.id = id;
+  link.rel = "stylesheet";
+  link.href = "https://fonts.googleapis.com/css2?family=" + value + "&display=swap";
+  document.head.appendChild(link);
+}
+
+function getFont(){
+  const opt = fontSelect.options[fontSelect.selectedIndex];
+  const google = opt.getAttribute("data-google");
+  ensureGoogleFontLoaded(google);
+  return opt.value;
+}
+
+function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function setImageFromInput(input,img,callback){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const url = await fileToDataURL(file);
+  if(callback) callback(url);
+  else img.src = url;
+  saveAll();
+}
+
+function renderTextToImage(imgEl, options){
+  const {
+    text,
+    fontFamily,
+    fontSize,
+    color,
+    strokeColor = "#000",
+    strokeWidth = 8,
+    shadowColor = "rgba(0,0,0,.75)",
+    shadowBlur = 8,
+    shadowY = 4,
+    letterSpacing = 0,
+    italic = false,
+    weight = 700,
+    padX = 30,
+    padY = 22,
+    gradient = false,
+    gradientColor1 = "#fff",
+    gradientColor2 = "#d9d9d9"
+  } = options;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.max(2, window.devicePixelRatio || 2);
+
+  const fontStyle = `${italic ? "italic" : "normal"} ${weight} ${fontSize}px ${fontFamily}`;
+  ctx.font = fontStyle;
+
+  const chars = [...text];
+  let width = 0;
+  chars.forEach((ch,i)=>{
+    width += ctx.measureText(ch).width;
+    if(i < chars.length - 1) width += letterSpacing;
+  });
+
+  const height = fontSize * 1.35;
+  canvas.width = Math.ceil((width + padX * 2) * dpr);
+  canvas.height = Math.ceil((height + padY * 2) * dpr);
+
+  ctx.scale(dpr,dpr);
+  ctx.font = fontStyle;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.lineJoin = "round";
+  ctx.miterLimit = 2;
+
+  const cx = (width + padX * 2) / 2;
+  const cy = (height + padY * 2) / 2;
+
+  let fill = color;
+  if(gradient){
+    const grad = ctx.createLinearGradient(0,0,width + padX * 2,0);
+    grad.addColorStop(0,gradientColor1);
+    grad.addColorStop(.5,color);
+    grad.addColorStop(1,gradientColor2);
+    fill = grad;
+  }
+
+  function drawChars(mode){
+    let x = cx - width / 2;
+    chars.forEach((ch,i)=>{
+      const w = ctx.measureText(ch).width;
+      const mid = x + w / 2;
+      if(mode === "stroke") ctx.strokeText(ch,mid,cy);
+      else ctx.fillText(ch,mid,cy);
+      x += w + letterSpacing;
+    });
+  }
+
+  ctx.lineWidth = strokeWidth;
+  ctx.strokeStyle = strokeColor;
+  ctx.shadowBlur = 0;
+  drawChars("stroke");
+
+  ctx.fillStyle = fill;
+  ctx.shadowColor = shadowColor;
+  ctx.shadowBlur = shadowBlur;
+  ctx.shadowOffsetY = shadowY;
+  drawChars("fill");
+
+  imgEl.src = canvas.toDataURL("image/png");
+}
+
+async function renderAllTexts(){
+  const font = getFont();
+  if(document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  renderTextToImage(titleImg,{
+    text:titleText.value || "Match officiel",
+    fontFamily:font,
+    fontSize:82,
+    color:mainColor.value,
+    strokeColor:"#000",
+    strokeWidth:9,
+    shadowBlur:7,
+    letterSpacing:0,
+    weight:700,
+    padX:35,
+    padY:24
+  });
+
+  renderTextToImage(dateImg,{
+    text:dateText.value || "Jeudi 09 Avril",
+    fontFamily:font,
+    fontSize:44,
+    color:mainColor.value,
+    strokeColor:"#000",
+    strokeWidth:6,
+    shadowBlur:5,
+    weight:700,
+    padX:25,
+    padY:18
+  });
+
+  renderTextToImage(timeImg,{
+    text:timeText.value || "21 h 30",
+    fontFamily:font,
+    fontSize:42,
+    color:mainColor.value,
+    strokeColor:"#000",
+    strokeWidth:6,
+    shadowBlur:5,
+    weight:700,
+    padX:22,
+    padY:16
+  });
+
+  renderTextToImage(vsImg,{
+    text:"VS",
+    fontFamily:"Impact, sans-serif",
+    fontSize:62,
+    color:vsColor.value,
+    strokeColor:"#8a1c00",
+    strokeWidth:4,
+    shadowColor:"rgba(255,120,0,.8)",
+    shadowBlur:12,
+    shadowY:0,
+    italic:true,
+    weight:900,
+    gradient:true,
+    gradientColor1:"#fff000",
+    gradientColor2:"#ff2400",
+    padX:18,
+    padY:14
+  });
+
+  renderTextToImage(boostImg,{
+    text:boostText.value || "sans boost",
+    fontFamily:"Georgia, serif",
+    fontSize:50,
+    color:mainColor.value,
+    strokeColor:"#000",
+    strokeWidth:7,
+    shadowBlur:4,
+    weight:900,
+    padX:24,
+    padY:16
+  });
+}
+
+function refreshHandles(){
+  handle1Preview.textContent = handle1.value || "@créa1";
+  handle2Preview.textContent = handle2.value || "@créa2";
+}
+
+function saveAll(){
+  try{
+    localStorage.setItem("titleText",titleText.value);
+    localStorage.setItem("dateText",dateText.value);
+    localStorage.setItem("timeText",timeText.value);
+    localStorage.setItem("boostText",boostText.value);
+    localStorage.setItem("handle1",handle1.value);
+    localStorage.setItem("handle2",handle2.value);
+    localStorage.setItem("mainColor",mainColor.value);
+    localStorage.setItem("vsColor",vsColor.value);
+    localStorage.setItem("font",fontSelect.value);
+  }catch(e){}
+}
+
+function restoreAll(){
+  try{
+    if(localStorage.getItem("titleText")) titleText.value = localStorage.getItem("titleText");
+    if(localStorage.getItem("dateText")) dateText.value = localStorage.getItem("dateText");
+    if(localStorage.getItem("timeText")) timeText.value = localStorage.getItem("timeText");
+    if(localStorage.getItem("boostText")) boostText.value = localStorage.getItem("boostText");
+    if(localStorage.getItem("handle1")) handle1.value = localStorage.getItem("handle1");
+    if(localStorage.getItem("handle2")) handle2.value = localStorage.getItem("handle2");
+    if(localStorage.getItem("mainColor")) mainColor.value = localStorage.getItem("mainColor");
+    if(localStorage.getItem("vsColor")) vsColor.value = localStorage.getItem("vsColor");
+
+    const savedFont = localStorage.getItem("font");
+    if(savedFont){
+      for(let i=0;i<fontSelect.options.length;i++){
+        if(fontSelect.options[i].value === savedFont){
+          fontSelect.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }catch(e){}
+}
+
+async function waitForImages(container){
+  const imgs = Array.from(container.querySelectorAll("img"));
+  await Promise.all(imgs.map(img=>{
+    if(!img.src) return Promise.resolve();
+    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+    return new Promise(resolve=>{
+      img.addEventListener("load",resolve,{once:true});
+      img.addEventListener("error",resolve,{once:true});
+    });
+  }));
+}
+
+async function exportPNG(){
+  await renderAllTexts();
+
+  const poster = document.getElementById("poster");
+
+  if(document.fonts && document.fonts.ready) await document.fonts.ready;
+  await waitForImages(poster);
+
+  const canvas = await html2canvas(poster,{
+    backgroundColor:null,
+    useCORS:true,
+    scale:3,
+    width:493,
+    height:700
+  });
+
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = "affiche-match-officiel.png";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+bgInput.addEventListener("change",()=>{
+  setImageFromInput(bgInput,null,(url)=>{
+    bg.style.backgroundImage = `url("${url}")`;
+  });
+});
+
+creator1Input.addEventListener("change",()=>{
+  setImageFromInput(creator1Input,creator1Img);
+});
+
+creator2Input.addEventListener("change",()=>{
+  setImageFromInput(creator2Input,creator2Img);
+});
+
+agencyInput.addEventListener("change",()=>{
+  setImageFromInput(agencyInput,agencyImg);
+});
+
+[
+  titleText,
+  dateText,
+  timeText,
+  boostText,
+  mainColor,
+  vsColor,
+  fontSelect
+].forEach(el=>{
+  el.addEventListener("input",async()=>{
+    await renderAllTexts();
+    saveAll();
+  });
+  el.addEventListener("change",async()=>{
+    await renderAllTexts();
+    saveAll();
+  });
+});
+
+[handle1,handle2].forEach(el=>{
+  el.addEventListener("input",()=>{
+    refreshHandles();
+    saveAll();
+  });
+});
+
+downloadBtn.addEventListener("click",()=>{
+  exportPNG().catch(err=>{
+    console.error(err);
+    alert("Erreur pendant l’export PNG.");
+  });
+});
+
+resetBtn.addEventListener("click",async()=>{
+  bg.style.backgroundImage = "";
+  creator1Img.src = "";
+  creator2Img.src = "";
+  agencyImg.src = "";
+
+  bgInput.value = "";
+  creator1Input.value = "";
+  creator2Input.value = "";
+  agencyInput.value = "";
+
+  titleText.value = "Match officiel";
+  dateText.value = "Jeudi 09 Avril";
+  timeText.value = "21 h 30";
+  boostText.value = "sans boost";
+  handle1.value = "@pierrotlefouuuu";
+  handle2.value = "@www.rafiki.com";
+  mainColor.value = "#ffffff";
+  vsColor.value = "#ff5a00";
+  fontSelect.selectedIndex = 0;
+
+  try{ localStorage.clear(); }catch(e){}
+
+  refreshHandles();
+  await renderAllTexts();
+});
+
+restoreAll();
+refreshHandles();
+renderAllTexts();
+</script>
+
+</body>
+</html>
