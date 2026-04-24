@@ -35,9 +35,11 @@ body{
 
 .panel{
   width:min(560px,95vw);
-  background:rgba(0,0,0,.35);
+  background:rgba(10,0,0,.55);
+  border:1px solid rgba(255,0,0,.25);
   border-radius:16px;
   padding:16px;
+  box-shadow:0 0 30px rgba(180,0,0,.18);
 }
 
 h1{margin:0 0 16px;font-size:21px}
@@ -61,8 +63,8 @@ input,button,a.linkBtn{
   width:100%;
   padding:10px;
   border-radius:9px;
-  border:1px solid rgba(255,255,255,.25);
-  background:rgba(0,0,0,.45);
+  border:1px solid rgba(255,0,0,.35);
+  background:rgba(0,0,0,.5);
   color:white;
   font-weight:700;
 }
@@ -73,16 +75,29 @@ input[type=range]{padding:0}
 button,
 a.linkBtn{
   cursor:pointer;
-  background:linear-gradient(#f8df7b,#c79a25);
-  color:#1d1500;
+  background:
+    radial-gradient(circle at 20% 15%,rgba(255,255,255,.18),transparent 20%),
+    linear-gradient(135deg,#160000 0%,#5a0000 45%,#d60000 100%);
+  color:#fff;
   font-weight:1000;
   text-align:center;
   text-decoration:none;
   display:block;
+  border:1px solid rgba(255,40,40,.65);
+  box-shadow:0 0 14px rgba(190,0,0,.35);
+  transition:.18s ease;
+}
+
+button:hover,
+a.linkBtn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 0 22px rgba(255,0,0,.55);
+  filter:brightness(1.08);
 }
 
 button.secondary{
-  background:rgba(0,0,0,.45);
+  background:
+    linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);
   color:white;
 }
 
@@ -90,11 +105,11 @@ button.isOff{opacity:.55}
 
 .akatsukiBtn{
   background:
-    radial-gradient(circle at 15% 20%,rgba(255,255,255,.18),transparent 18%),
-    linear-gradient(135deg,#090909 0%,#230000 45%,#b00000 100%);
+    radial-gradient(circle at 18% 20%,rgba(255,255,255,.2),transparent 16%),
+    linear-gradient(135deg,#080808 0%,#290000 42%,#b30000 100%);
   color:#fff;
-  border:1px solid rgba(255,0,0,.55);
-  box-shadow:0 0 18px rgba(180,0,0,.45);
+  border:1px solid rgba(255,0,0,.7);
+  box-shadow:0 0 20px rgba(210,0,0,.45);
   letter-spacing:.3px;
 }
 
@@ -236,19 +251,13 @@ button.isOff{opacity:.55}
   background-size:6px 6px;
   mix-blend-mode:overlay;
 }
-
-.help{
-  font-size:12px;
-  opacity:.9;
-  margin-top:8px;
-}
 </style>
 </head>
 
 <body>
 
 <div class="panel">
-  <h1>🥊 Générateur affiche Match Officiel</h1>
+  <h1>☁️ Générateur affiche Match Officiel</h1>
 
   <div class="field">
     <label>Image de fond</label>
@@ -310,6 +319,11 @@ button.isOff{opacity:.55}
     </div>
   </div>
 
+  <div class="field">
+    <label>Taille logo Akatsuki</label>
+    <input id="agencySize" type="range" min="40" max="150" value="78">
+  </div>
+
   <div class="row">
     <div class="field">
       <label>Couleur texte</label>
@@ -337,12 +351,8 @@ button.isOff{opacity:.55}
 
   <div class="btns">
     <a class="linkBtn akatsukiBtn" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
-      ☁️ Rejoindre l’Akatsuki Organization avec ChatGPT
+      ☁️ Invoquer ChatGPT pour l’Akatsuki
     </a>
-  </div>
-
-  <div class="help">
-    Le logo fixe doit s’appeler <strong>AkaTsuki.png</strong> et être dans le même dossier que ce fichier HTML.
   </div>
 </div>
 
@@ -605,6 +615,7 @@ async function renderAll(){
   $("circleText2").textContent = $("handle2Text").value || "@créa 2";
 
   applyBubbleControls();
+  applyAgencySize();
   applyVisibility();
   saveSettings();
 }
@@ -647,6 +658,12 @@ function setBubbleSize(id,size){
   );
 
   inner.style.inset = Math.round(size * .14) + "px";
+}
+
+function applyAgencySize(){
+  const size = Number($("agencySize").value);
+  $("agencyBox").style.width = size + "px";
+  $("agencyBox").style.height = size + "px";
 }
 
 function applyVisibility(){
@@ -713,6 +730,7 @@ function saveSettings(){
     bubble2TextSize:$("bubble2TextSize").value,
     bubble1Angle:$("bubble1Angle").value,
     bubble2Angle:$("bubble2Angle").value,
+    agencySize:$("agencySize").value,
     state
   };
 
@@ -733,6 +751,7 @@ function restoreSettings(){
     if(data.bubble2TextSize) $("bubble2TextSize").value = data.bubble2TextSize;
     if(data.bubble1Angle) $("bubble1Angle").value = data.bubble1Angle;
     if(data.bubble2Angle) $("bubble2Angle").value = data.bubble2Angle;
+    if(data.agencySize) $("agencySize").value = data.agencySize;
 
     if(data.state){
       Object.assign(state,data.state);
@@ -859,7 +878,8 @@ $("avatar2Input").addEventListener("change",()=>{
   "bubble1TextSize",
   "bubble2TextSize",
   "bubble1Angle",
-  "bubble2Angle"
+  "bubble2Angle",
+  "agencySize"
 ].forEach(id=>{
   $(id).addEventListener("input",renderAll);
 });
@@ -928,7 +948,7 @@ $("downloadBtn").addEventListener("click",async()=>{
 
   }catch(err){
     console.error(err);
-    alert("Erreur export PNG. Mets bien AkaTsuki.png dans le même dossier que ce fichier HTML. Si tu ouvres le fichier en local et que ça bloque encore, lance-le via un petit serveur local.");
+    alert("Erreur export PNG. Vérifie que AkaTsuki.png est accessible dans le même dossier que ce fichier HTML.");
   }finally{
     btn.textContent = "Télécharger PNG";
     btn.disabled = false;
