@@ -6,11 +6,12 @@
 <title>Générateur affiche Match Officiel</title>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lobster&family=Pacifico&family=Alex+Brush&family=Anton&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
 
 :root{
   --poster-w:493px;
   --poster-h:700px;
+  --main-font:"Lobster", cursive;
 }
 
 *{box-sizing:border-box}
@@ -61,7 +62,7 @@ label{
   font-weight:800;
 }
 
-input,select,button{
+input,button{
   width:100%;
   padding:10px;
   border-radius:9px;
@@ -76,6 +77,10 @@ input[type=color]{
   padding:4px;
 }
 
+input[type=range]{
+  padding:0;
+}
+
 button{
   cursor:pointer;
   background:linear-gradient(#f8df7b,#c79a25);
@@ -86,6 +91,17 @@ button{
 button.secondary{
   background:rgba(0,0,0,.45);
   color:white;
+}
+
+button.isOff{
+  opacity:.55;
+}
+
+.btns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
 }
 
 .previewWrap{
@@ -99,7 +115,7 @@ button.secondary{
   height:var(--poster-h);
   position:relative;
   overflow:hidden;
-  background:#080808;
+  background:#060606;
   box-shadow:0 22px 60px rgba(0,0,0,.55);
   user-select:none;
 }
@@ -118,9 +134,9 @@ button.secondary{
   z-index:1;
   pointer-events:none;
   background:
-    radial-gradient(circle at 50% 45%,rgba(255,80,0,.18),transparent 40%),
-    radial-gradient(circle at 50% 50%,transparent 30%,rgba(0,0,0,.65) 100%),
-    linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.08),rgba(0,0,0,.48));
+    radial-gradient(circle at 50% 48%,rgba(255,80,0,.18),transparent 38%),
+    radial-gradient(circle at 50% 50%,transparent 30%,rgba(0,0,0,.72) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.08),rgba(0,0,0,.52));
 }
 
 .draggable{
@@ -136,13 +152,14 @@ button.secondary{
 
 .textImg{
   display:block;
+  width:100%;
   pointer-events:none;
 }
 
 #titleBox{left:25px;top:25px;width:445px}
 #dateBox{left:120px;top:150px;width:255px}
 #timeBox{left:183px;top:197px;width:125px}
-#vsBox{left:202px;top:455px;width:90px}
+#vsBox{left:185px;top:455px;width:125px}
 #boostBox{left:95px;top:600px;width:305px}
 
 .bubble{
@@ -188,13 +205,23 @@ button.secondary{
 
 #bubble1{left:45px;top:305px}
 #bubble2{left:325px;top:475px}
-#agencyBox{left:25px;top:620px;width:78px;height:78px}
+
+#agencyBox{
+  left:25px;
+  top:620px;
+  width:78px;
+  height:78px;
+}
 
 #agencyBox img{
   width:100%;
   height:100%;
   border-radius:50%;
   object-fit:cover;
+}
+
+.hiddenPosterElement{
+  display:none!important;
 }
 
 .grain{
@@ -208,16 +235,10 @@ button.secondary{
   mix-blend-mode:overlay;
 }
 
-.btns{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
 .help{
   font-size:12px;
   opacity:.9;
-  margin-top:10px;
+  margin-top:8px;
 }
 </style>
 </head>
@@ -250,34 +271,34 @@ button.secondary{
 
   <div class="row">
     <div class="field">
-      <label>Titre</label>
-      <input id="titleText" value="Match officiel">
-    </div>
-    <div class="field">
-      <label>Texte boost</label>
-      <input id="boostText" value="sans boost">
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="field">
-      <label>Date</label>
-      <input id="dateText" value="Jeudi 09 Avril">
-    </div>
-    <div class="field">
-      <label>Heure</label>
-      <input id="timeText" value="21 h 30">
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="field">
       <label>Texte bulle 1</label>
       <input id="handle1Text" value="@pierrotlefouuuu">
     </div>
     <div class="field">
       <label>Texte bulle 2</label>
       <input id="handle2Text" value="@www.rafiki.com">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Taille rond 1</label>
+      <input id="bubble1Size" type="range" min="80" max="190" value="126">
+    </div>
+    <div class="field">
+      <label>Taille rond 2</label>
+      <input id="bubble2Size" type="range" min="80" max="190" value="126">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Rotation texte bulle 1</label>
+      <input id="bubble1Angle" type="range" min="0" max="360" value="110">
+    </div>
+    <div class="field">
+      <label>Rotation texte bulle 2</label>
+      <input id="bubble2Angle" type="range" min="0" max="360" value="110">
     </div>
   </div>
 
@@ -292,17 +313,13 @@ button.secondary{
     </div>
   </div>
 
-  <div class="field">
-    <label>Police titre / date / heure</label>
-    <select id="fontSelect">
-      <option value='"Great Vibes", cursive'>Great Vibes</option>
-      <option value='"Lobster", cursive" selected>Lobster</option>
-      <option value='"Pacifico", cursive'>Pacifico</option>
-      <option value='"Alex Brush", cursive'>Alex Brush</option>
-      <option value='"Anton", sans-serif'>Anton</option>
-      <option value='Impact, sans-serif'>Impact</option>
-      <option value='Georgia, serif'>Georgia</option>
-    </select>
+  <div class="btns">
+    <button id="toggleTitleBtn">Titre : ON</button>
+    <button id="toggleDateBtn">Date : ON</button>
+    <button id="toggleTimeBtn">Heure : ON</button>
+    <button id="toggleVsBtn">VS : ON</button>
+    <button id="toggleBubblesBtn">Bulles : ON</button>
+    <button id="boostToggleBtn">Sans Boost</button>
   </div>
 
   <div class="btns">
@@ -311,7 +328,7 @@ button.secondary{
   </div>
 
   <div class="help">
-    Astuce : tu peux déplacer le titre, la date, l’heure, VS, les bulles et le logo en glissant avec la souris.
+    Tu peux déplacer le titre, la date, l’heure, VS, les bulles et le logo en glissant avec la souris.
   </div>
 </div>
 
@@ -332,7 +349,7 @@ button.secondary{
           <path id="circlePath1" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
         </defs>
         <text>
-          <textPath id="circleText1" href="#circlePath1" startOffset="63%" text-anchor="middle">@pierrotlefouuuu</textPath>
+          <textPath id="circleText1" href="#circlePath1" startOffset="50%" text-anchor="middle">@pierrotlefouuuu</textPath>
         </text>
       </svg>
       <div class="bubbleInner"><img id="avatar1Img"></div>
@@ -344,7 +361,7 @@ button.secondary{
           <path id="circlePath2" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
         </defs>
         <text>
-          <textPath id="circleText2" href="#circlePath2" startOffset="63%" text-anchor="middle">@www.rafiki.com</textPath>
+          <textPath id="circleText2" href="#circlePath2" startOffset="50%" text-anchor="middle">@www.rafiki.com</textPath>
         </text>
       </svg>
       <div class="bubbleInner"><img id="avatar2Img"></div>
@@ -363,38 +380,20 @@ button.secondary{
 <script>
 const $ = id => document.getElementById(id);
 
-const inputs = {
-  bg: $("bgInput"),
-  avatar1: $("avatar1Input"),
-  avatar2: $("avatar2Input"),
-  agency: $("agencyInput"),
-  title: $("titleText"),
-  date: $("dateText"),
-  time: $("timeText"),
-  boost: $("boostText"),
-  handle1: $("handle1Text"),
-  handle2: $("handle2Text"),
-  mainColor: $("mainColor"),
-  vsColor: $("vsColor"),
-  font: $("fontSelect")
-};
-
-const imgs = {
-  title: $("titleImg"),
-  date: $("dateImg"),
-  time: $("timeImg"),
-  vs: $("vsImg"),
-  boost: $("boostImg"),
-  avatar1: $("avatar1Img"),
-  avatar2: $("avatar2Img"),
-  agency: $("agencyImg")
+const state = {
+  boost: false,
+  showTitle: true,
+  showDate: true,
+  showTime: true,
+  showVs: true,
+  showBubbles: true
 };
 
 const defaultPositions = {
   titleBox:{x:25,y:25},
   dateBox:{x:120,y:150},
   timeBox:{x:183,y:197},
-  vsBox:{x:202,y:455},
+  vsBox:{x:185,y:455},
   boostBox:{x:95,y:600},
   bubble1:{x:45,y:305},
   bubble2:{x:325,y:475},
@@ -410,29 +409,26 @@ function fileToDataURL(file){
   });
 }
 
-function clampText(text,max){
-  text = String(text || "").trim();
-  if(text.length <= max) return text;
-  return text.slice(0,max - 1) + "…";
+async function loadFile(input,callback){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const url = await fileToDataURL(file);
+  callback(url);
 }
 
 function renderTextToImg(img,{
   text,
-  fontFamily,
   maxWidth,
   startSize,
   minSize,
-  color,
+  color="#fff",
   strokeColor="#000",
   strokeWidth=8,
-  weight=900,
-  italic=false,
-  shadowColor="rgba(0,0,0,.75)",
+  shadowColor="rgba(0,0,0,.8)",
   shadowBlur=8,
   shadowY=5,
-  padX=28,
+  padX=30,
   padY=22,
-  letterSpacing=0,
   gradient=false,
   g1="#fff",
   g2="#ddd"
@@ -440,24 +436,17 @@ function renderTextToImg(img,{
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const dpr = Math.max(2, window.devicePixelRatio || 2);
-
-  text = text || "";
+  const fontFamily = getComputedStyle(document.documentElement).getPropertyValue("--main-font").trim();
 
   let size = startSize;
 
   function setFont(){
-    ctx.font = `${italic ? "italic" : "normal"} ${weight} ${size}px ${fontFamily}`;
+    ctx.font = `900 ${size}px ${fontFamily}`;
   }
 
   function measure(){
     setFont();
-    const chars = [...text];
-    let w = 0;
-    chars.forEach((ch,i)=>{
-      w += ctx.measureText(ch).width;
-      if(i < chars.length - 1) w += letterSpacing;
-    });
-    return w;
+    return ctx.measureText(text).width;
   }
 
   let textW = measure();
@@ -468,14 +457,13 @@ function renderTextToImg(img,{
   }
 
   const textH = size * 1.35;
-  const w = Math.ceil((textW + padX * 2) * dpr);
-  const h = Math.ceil((textH + padY * 2) * dpr);
 
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = Math.ceil((textW + padX * 2) * dpr);
+  canvas.height = Math.ceil((textH + padY * 2) * dpr);
 
   ctx.scale(dpr,dpr);
   setFont();
+
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.lineJoin = "round";
@@ -489,34 +477,21 @@ function renderTextToImg(img,{
   if(gradient){
     const grad = ctx.createLinearGradient(0,0,textW + padX * 2,0);
     grad.addColorStop(0,g1);
-    grad.addColorStop(.45,color);
+    grad.addColorStop(.5,color);
     grad.addColorStop(1,g2);
     fill = grad;
-  }
-
-  const chars = [...text];
-
-  function draw(mode){
-    let x = cx - textW / 2;
-    chars.forEach((ch,i)=>{
-      const cw = ctx.measureText(ch).width;
-      const mid = x + cw / 2;
-      if(mode === "stroke") ctx.strokeText(ch,mid,cy);
-      else ctx.fillText(ch,mid,cy);
-      x += cw + letterSpacing;
-    });
   }
 
   ctx.shadowColor = "transparent";
   ctx.lineWidth = strokeWidth;
   ctx.strokeStyle = strokeColor;
-  draw("stroke");
+  ctx.strokeText(text,cx,cy);
 
   ctx.fillStyle = fill;
   ctx.shadowColor = shadowColor;
   ctx.shadowBlur = shadowBlur;
   ctx.shadowOffsetY = shadowY;
-  draw("fill");
+  ctx.fillText(text,cx,cy);
 
   img.src = canvas.toDataURL("image/png");
   img.style.width = "100%";
@@ -525,103 +500,125 @@ function renderTextToImg(img,{
 async function renderAll(){
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
 
-  const font = inputs.font.value;
-  const color = inputs.mainColor.value;
+  const mainColor = $("mainColor").value;
+  const vsColor = $("vsColor").value;
 
-  renderTextToImg(imgs.title,{
-    text:clampText(inputs.title.value,28),
-    fontFamily:font,
+  renderTextToImg($("titleImg"),{
+    text:"Match officiel",
     maxWidth:445,
     startSize:82,
     minSize:34,
-    color,
+    color:mainColor,
     strokeWidth:10,
     padX:34
   });
 
-  renderTextToImg(imgs.date,{
-    text:clampText(inputs.date.value,28),
-    fontFamily:font,
+  renderTextToImg($("dateImg"),{
+    text:"Jeudi 09 Avril",
     maxWidth:255,
     startSize:44,
     minSize:24,
-    color,
+    color:mainColor,
     strokeWidth:7
   });
 
-  renderTextToImg(imgs.time,{
-    text:clampText(inputs.time.value,16),
-    fontFamily:font,
+  renderTextToImg($("timeImg"),{
+    text:"21 h 30",
     maxWidth:125,
     startSize:44,
     minSize:22,
-    color,
+    color:mainColor,
     strokeWidth:7
   });
 
-  renderTextToImg(imgs.vs,{
+  renderTextToImg($("vsImg"),{
     text:"VS",
-    fontFamily:"Impact, sans-serif",
-    maxWidth:90,
-    startSize:64,
-    minSize:40,
-    color:inputs.vsColor.value,
-    strokeColor:"#8b1600",
-    strokeWidth:4,
-    italic:true,
+    maxWidth:125,
+    startSize:76,
+    minSize:38,
+    color:vsColor,
+    strokeColor:"#000",
+    strokeWidth:8,
     shadowColor:"rgba(255,90,0,.9)",
-    shadowBlur:12,
+    shadowBlur:14,
     shadowY:0,
     gradient:true,
     g1:"#fff000",
     g2:"#ff2400",
-    padX:12,
-    padY:12
+    padX:18,
+    padY:18
   });
 
-  renderTextToImg(imgs.boost,{
-    text:clampText(inputs.boost.value,24),
-    fontFamily:"Georgia, serif",
+  renderTextToImg($("boostImg"),{
+    text:state.boost ? "avec boost" : "sans boost",
     maxWidth:305,
     startSize:58,
     minSize:28,
-    color,
+    color:mainColor,
     strokeWidth:8,
     padX:24
   });
 
-  $("circleText1").textContent = clampText(inputs.handle1.value,24);
-  $("circleText2").textContent = clampText(inputs.handle2.value,24);
+  $("circleText1").textContent = $("handle1Text").value || "@créa1";
+  $("circleText2").textContent = $("handle2Text").value || "@créa2";
+
+  applyBubbleControls();
+  applyVisibility();
+  saveSettings();
 }
 
-function saveText(){
-  const data = {
-    title:inputs.title.value,
-    date:inputs.date.value,
-    time:inputs.time.value,
-    boost:inputs.boost.value,
-    handle1:inputs.handle1.value,
-    handle2:inputs.handle2.value,
-    mainColor:inputs.mainColor.value,
-    vsColor:inputs.vsColor.value,
-    font:inputs.font.value
-  };
-  localStorage.setItem("matchPosterText",JSON.stringify(data));
+function applyBubbleControls(){
+  const size1 = Number($("bubble1Size").value);
+  const size2 = Number($("bubble2Size").value);
+  const angle1 = Number($("bubble1Angle").value);
+  const angle2 = Number($("bubble2Angle").value);
+
+  setBubbleSize("bubble1",size1);
+  setBubbleSize("bubble2",size2);
+
+  $("circleText1").setAttribute("startOffset", angle1 / 360 * 100 + "%");
+  $("circleText2").setAttribute("startOffset", angle2 / 360 * 100 + "%");
 }
 
-function restoreText(){
-  try{
-    const data = JSON.parse(localStorage.getItem("matchPosterText") || "{}");
-    if(data.title) inputs.title.value = data.title;
-    if(data.date) inputs.date.value = data.date;
-    if(data.time) inputs.time.value = data.time;
-    if(data.boost) inputs.boost.value = data.boost;
-    if(data.handle1) inputs.handle1.value = data.handle1;
-    if(data.handle2) inputs.handle2.value = data.handle2;
-    if(data.mainColor) inputs.mainColor.value = data.mainColor;
-    if(data.vsColor) inputs.vsColor.value = data.vsColor;
-    if(data.font) inputs.font.value = data.font;
-  }catch(e){}
+function setBubbleSize(id,size){
+  const el = $(id);
+  const svg = el.querySelector("svg");
+  const inner = el.querySelector(".bubbleInner");
+  const path = el.querySelector("path");
+
+  el.style.width = size + "px";
+  el.style.height = size + "px";
+
+  svg.setAttribute("viewBox",`0 0 ${size} ${size}`);
+
+  const cx = size / 2;
+  const r = size * .39;
+  path.setAttribute("d",`M${cx},${cx} m-${r},0 a${r},${r} 0 1,1 ${r*2},0 a${r},${r} 0 1,1 -${r*2},0`);
+
+  inner.style.inset = Math.round(size * .14) + "px";
+}
+
+function applyVisibility(){
+  $("titleBox").classList.toggle("hiddenPosterElement",!state.showTitle);
+  $("dateBox").classList.toggle("hiddenPosterElement",!state.showDate);
+  $("timeBox").classList.toggle("hiddenPosterElement",!state.showTime);
+  $("vsBox").classList.toggle("hiddenPosterElement",!state.showVs);
+  $("bubble1").classList.toggle("hiddenPosterElement",!state.showBubbles);
+  $("bubble2").classList.toggle("hiddenPosterElement",!state.showBubbles);
+
+  updateToggleButton("toggleTitleBtn","Titre",state.showTitle);
+  updateToggleButton("toggleDateBtn","Date",state.showDate);
+  updateToggleButton("toggleTimeBtn","Heure",state.showTime);
+  updateToggleButton("toggleVsBtn","VS",state.showVs);
+  updateToggleButton("toggleBubblesBtn","Bulles",state.showBubbles);
+
+  $("boostToggleBtn").textContent = state.boost ? "Avec Boost" : "Sans Boost";
+}
+
+function updateToggleButton(id,label,on){
+  const btn = $(id);
+  btn.textContent = `${label} : ${on ? "ON" : "OFF"}`;
+  btn.classList.toggle("isOff",!on);
 }
 
 function savePositions(){
@@ -637,6 +634,7 @@ function savePositions(){
 
 function restorePositions(){
   let data = defaultPositions;
+
   try{
     data = {
       ...defaultPositions,
@@ -650,6 +648,41 @@ function restorePositions(){
     el.style.left = pos.x + "px";
     el.style.top = pos.y + "px";
   });
+}
+
+function saveSettings(){
+  const data = {
+    handle1:$("handle1Text").value,
+    handle2:$("handle2Text").value,
+    mainColor:$("mainColor").value,
+    vsColor:$("vsColor").value,
+    bubble1Size:$("bubble1Size").value,
+    bubble2Size:$("bubble2Size").value,
+    bubble1Angle:$("bubble1Angle").value,
+    bubble2Angle:$("bubble2Angle").value,
+    state
+  };
+
+  localStorage.setItem("matchPosterSettings",JSON.stringify(data));
+}
+
+function restoreSettings(){
+  try{
+    const data = JSON.parse(localStorage.getItem("matchPosterSettings") || "{}");
+
+    if(data.handle1) $("handle1Text").value = data.handle1;
+    if(data.handle2) $("handle2Text").value = data.handle2;
+    if(data.mainColor) $("mainColor").value = data.mainColor;
+    if(data.vsColor) $("vsColor").value = data.vsColor;
+    if(data.bubble1Size) $("bubble1Size").value = data.bubble1Size;
+    if(data.bubble2Size) $("bubble2Size").value = data.bubble2Size;
+    if(data.bubble1Angle) $("bubble1Angle").value = data.bubble1Angle;
+    if(data.bubble2Angle) $("bubble2Angle").value = data.bubble2Angle;
+
+    if(data.state){
+      Object.assign(state,data.state);
+    }
+  }catch(e){}
 }
 
 function makeDraggable(el){
@@ -681,8 +714,8 @@ function makeDraggable(el){
     let x = baseX + (e.clientX - startX) * scaleX;
     let y = baseY + (e.clientY - startY) * scaleY;
 
-    x = Math.max(-80,Math.min(493 - 20,x));
-    y = Math.max(-80,Math.min(700 - 20,y));
+    x = Math.max(-120,Math.min(493 - 20,x));
+    y = Math.max(-120,Math.min(700 - 20,y));
 
     el.style.left = x + "px";
     el.style.top = y + "px";
@@ -692,62 +725,22 @@ function makeDraggable(el){
     if(el.hasPointerCapture(e.pointerId)){
       el.releasePointerCapture(e.pointerId);
     }
+
     el.style.zIndex = "";
     savePositions();
   });
 }
 
-async function loadFile(input,callback){
-  const file = input.files && input.files[0];
-  if(!file) return;
-  const url = await fileToDataURL(file);
-  callback(url);
-}
-
-inputs.bg.addEventListener("change",()=>{
-  loadFile(inputs.bg,url=>{
-    $("bg").style.backgroundImage = `url("${url}")`;
-  });
-});
-
-inputs.avatar1.addEventListener("change",()=>{
-  loadFile(inputs.avatar1,url=>imgs.avatar1.src = url);
-});
-
-inputs.avatar2.addEventListener("change",()=>{
-  loadFile(inputs.avatar2,url=>imgs.avatar2.src = url);
-});
-
-inputs.agency.addEventListener("change",()=>{
-  loadFile(inputs.agency,url=>imgs.agency.src = url);
-});
-
-[
-  inputs.title,
-  inputs.date,
-  inputs.time,
-  inputs.boost,
-  inputs.handle1,
-  inputs.handle2,
-  inputs.mainColor,
-  inputs.vsColor,
-  inputs.font
-].forEach(el=>{
-  el.addEventListener("input",async()=>{
-    await renderAll();
-    saveText();
-  });
-  el.addEventListener("change",async()=>{
-    await renderAll();
-    saveText();
-  });
-});
-
 async function waitForImages(container){
   const images = Array.from(container.querySelectorAll("img"));
+
   await Promise.all(images.map(img=>{
     if(!img.src) return Promise.resolve();
-    if(img.complete && img.naturalWidth > 0) return Promise.resolve();
+
+    if(img.complete && img.naturalWidth > 0){
+      return Promise.resolve();
+    }
+
     return new Promise(resolve=>{
       img.addEventListener("load",resolve,{once:true});
       img.addEventListener("error",resolve,{once:true});
@@ -755,11 +748,82 @@ async function waitForImages(container){
   }));
 }
 
+$("bgInput").addEventListener("change",()=>{
+  loadFile($("bgInput"),url=>{
+    $("bg").style.backgroundImage = `url("${url}")`;
+  });
+});
+
+$("avatar1Input").addEventListener("change",()=>{
+  loadFile($("avatar1Input"),url=>{
+    $("avatar1Img").src = url;
+  });
+});
+
+$("avatar2Input").addEventListener("change",()=>{
+  loadFile($("avatar2Input"),url=>{
+    $("avatar2Img").src = url;
+  });
+});
+
+$("agencyInput").addEventListener("change",()=>{
+  loadFile($("agencyInput"),url=>{
+    $("agencyImg").src = url;
+  });
+});
+
+[
+  "handle1Text",
+  "handle2Text",
+  "mainColor",
+  "vsColor",
+  "bubble1Size",
+  "bubble2Size",
+  "bubble1Angle",
+  "bubble2Angle"
+].forEach(id=>{
+  $(id).addEventListener("input",renderAll);
+});
+
+$("toggleTitleBtn").addEventListener("click",()=>{
+  state.showTitle = !state.showTitle;
+  renderAll();
+});
+
+$("toggleDateBtn").addEventListener("click",()=>{
+  state.showDate = !state.showDate;
+  renderAll();
+});
+
+$("toggleTimeBtn").addEventListener("click",()=>{
+  state.showTime = !state.showTime;
+  renderAll();
+});
+
+$("toggleVsBtn").addEventListener("click",()=>{
+  state.showVs = !state.showVs;
+  renderAll();
+});
+
+$("toggleBubblesBtn").addEventListener("click",()=>{
+  state.showBubbles = !state.showBubbles;
+  renderAll();
+});
+
+$("boostToggleBtn").addEventListener("click",()=>{
+  state.boost = !state.boost;
+  renderAll();
+});
+
 $("downloadBtn").addEventListener("click",async()=>{
   const poster = $("poster");
+
   await renderAll();
 
-  if(document.fonts && document.fonts.ready) await document.fonts.ready;
+  if(document.fonts && document.fonts.ready){
+    await document.fonts.ready;
+  }
+
   await waitForImages(poster);
 
   const canvas = await html2canvas(poster,{
@@ -783,7 +847,7 @@ $("resetBtn").addEventListener("click",()=>{
 
 document.querySelectorAll(".draggable").forEach(makeDraggable);
 
-restoreText();
+restoreSettings();
 restorePositions();
 renderAll();
 </script>
