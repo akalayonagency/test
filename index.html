@@ -110,18 +110,18 @@ button.isOff{opacity:.55}
   border:1px solid rgba(255,0,0,.7);
   box-shadow:0 0 20px rgba(210,0,0,.45);
   letter-spacing:.3px;
-  .full{
-  grid-column: span 2;
-    .chatgptBtnWrap{
+}
+
+/* bouton pleine largeur */
+.chatgptBtnWrap{
   width:100%;
   margin-bottom:10px;
 }
 
-.chatgptBtnWrap .akatsukiBtn{
+.chatgptBtnWrap a{
+  display:block;
   width:100%;
   padding:14px;
-}
-}
 }
 
 .btns{
@@ -361,10 +361,12 @@ button.isOff{opacity:.55}
   </div>
 
  <div class="btns">
-  <a class="linkBtn akatsukiBtn full" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
-    ☁️ 🔴 暁 Invoquer ChatGPT pour l’Akatsuki ☁️ 🔴 暁
+ <div class="chatgptBtnWrap">
+  <div class="chatgptBtnWrap">
+  <a href="https://chatgpt.com" target="_blank">
+    ☁️🔴暁 Invoquer ChatGPT pour l’Akatsuki☁️🔴暁
   </a>
-</div>
+  </div>
   </div>
 </div>
 
