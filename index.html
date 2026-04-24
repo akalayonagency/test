@@ -96,8 +96,7 @@ a.linkBtn:hover{
 }
 
 button.secondary{
-  background:
-    linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);
+  background:linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);
   color:white;
 }
 
@@ -224,7 +223,7 @@ button.isOff{opacity:.55}
 #agencyBox{
   position:absolute;
   left:25px;
-  top:620px;
+  top:597px;
   width:78px;
   height:78px;
   z-index:6;
@@ -403,6 +402,10 @@ button.isOff{opacity:.55}
 
 <script>
 const $ = id => document.getElementById(id);
+
+const POSTER_W = 493;
+const POSTER_H = 700;
+const AGENCY_MARGIN = 25;
 
 const state = {
   boost:false,
@@ -661,17 +664,16 @@ function setBubbleSize(id,size){
 }
 
 function applyAgencySize(){
-  const size = Number($("agencySize").value);
+  const requestedSize = Number($("agencySize").value);
+  const maxSize = POSTER_H - AGENCY_MARGIN * 2;
+  const size = Math.min(requestedSize, maxSize);
   const box = $("agencyBox");
 
   box.style.width = size + "px";
   box.style.height = size + "px";
 
-  const margin = 25;
-
-  box.style.left = margin + "px";
-  box.style.top = (700 - size - margin) + "px";
-}
+  box.style.left = AGENCY_MARGIN + "px";
+  box.style.top = Math.max(AGENCY_MARGIN, POSTER_H - size - AGENCY_MARGIN) + "px";
 }
 
 function applyVisibility(){
@@ -790,14 +792,14 @@ function makeDraggable(el){
 
     const poster = $("poster");
     const rect = poster.getBoundingClientRect();
-    const scaleX = 493 / rect.width;
-    const scaleY = 700 / rect.height;
+    const scaleX = POSTER_W / rect.width;
+    const scaleY = POSTER_H / rect.height;
 
     let x = baseX + (e.clientX - startX) * scaleX;
     let y = baseY + (e.clientY - startY) * scaleY;
 
-    x = Math.max(-120,Math.min(493 - 20,x));
-    y = Math.max(-120,Math.min(700 - 20,y));
+    x = Math.max(-120,Math.min(POSTER_W - 20,x));
+    y = Math.max(-120,Math.min(POSTER_H - 20,y));
 
     el.style.left = x + "px";
     el.style.top = y + "px";
@@ -944,12 +946,12 @@ $("downloadBtn").addEventListener("click",async()=>{
       useCORS:false,
       allowTaint:true,
       scale:3,
-      width:493,
-      height:700,
+      width:POSTER_W,
+      height:POSTER_H,
       scrollX:0,
       scrollY:0,
-      windowWidth:493,
-      windowHeight:700
+      windowWidth:POSTER_W,
+      windowHeight:POSTER_H
     });
 
     downloadCanvas(canvas,"affiche-match-officiel.png");
@@ -966,12 +968,14 @@ $("downloadBtn").addEventListener("click",async()=>{
 $("resetBtn").addEventListener("click",()=>{
   localStorage.removeItem("matchPosterPositions");
   restorePositions();
+  applyAgencySize();
 });
 
 document.querySelectorAll(".draggable").forEach(makeDraggable);
 
 restoreSettings();
 restorePositions();
+applyAgencySize();
 secureLocalImages();
 renderAll();
 </script>
