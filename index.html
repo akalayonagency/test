@@ -36,13 +36,16 @@ body{
 .panel{
   width:min(560px,95vw);
   background:rgba(10,0,0,.55);
-  border:1px solid rgba(255,0,0,.25);
+  border:1px solid rgba(255,0,0,.35);
   border-radius:16px;
   padding:16px;
   box-shadow:0 0 30px rgba(180,0,0,.18);
 }
 
-h1{margin:0 0 16px;font-size:21px}
+h1{
+  margin:0 0 16px;
+  font-size:21px;
+}
 
 .row{
   display:grid;
@@ -57,71 +60,28 @@ h1{margin:0 0 16px;font-size:21px}
   margin-bottom:12px;
 }
 
-label{font-size:12px;font-weight:800}
+label{
+  font-size:12px;
+  font-weight:800;
+}
 
-input,button,a.linkBtn{
+input{
   width:100%;
   padding:10px;
   border-radius:9px;
-  border:1px solid rgba(255,0,0,.35);
-  background:rgba(0,0,0,.5);
+  border:1px solid rgba(255,0,0,.45);
+  background:rgba(0,0,0,.55);
   color:white;
   font-weight:700;
 }
 
-input[type=color]{height:42px;padding:4px}
-input[type=range]{padding:0}
-
-button,
-a.linkBtn{
-  cursor:pointer;
-  background:
-    radial-gradient(circle at 20% 15%,rgba(255,255,255,.18),transparent 20%),
-    linear-gradient(135deg,#160000 0%,#5a0000 45%,#d60000 100%);
-  color:#fff;
-  font-weight:1000;
-  text-align:center;
-  text-decoration:none;
-  display:block;
-  border:1px solid rgba(255,40,40,.65);
-  box-shadow:0 0 14px rgba(190,0,0,.35);
-  transition:.18s ease;
+input[type=color]{
+  height:42px;
+  padding:4px;
 }
 
-button:hover,
-a.linkBtn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 0 22px rgba(255,0,0,.55);
-  filter:brightness(1.08);
-}
-
-button.secondary{
-  background:linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);
-  color:white;
-}
-
-button.isOff{opacity:.55}
-
-.akatsukiBtn{
-  background:
-    radial-gradient(circle at 18% 20%,rgba(255,255,255,.2),transparent 16%),
-    linear-gradient(135deg,#080808 0%,#290000 42%,#b30000 100%);
-  color:#fff;
-  border:1px solid rgba(255,0,0,.7);
-  box-shadow:0 0 20px rgba(210,0,0,.45);
-  letter-spacing:.3px;
-}
-
-/* bouton pleine largeur */
-.chatgptBtnWrap{
-  width:100%;
-  margin-bottom:10px;
-}
-
-.chatgptBtnWrap a{
-  display:block;
-  width:100%;
-  padding:14px;
+input[type=range]{
+  padding:0;
 }
 
 .btns{
@@ -129,6 +89,63 @@ button.isOff{opacity:.55}
   grid-template-columns:1fr 1fr;
   gap:10px;
   margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  padding:11px;
+  border-radius:9px;
+  border:1px solid rgba(255,40,40,.7);
+  cursor:pointer;
+  background:
+    radial-gradient(circle at 20% 15%,rgba(255,255,255,.16),transparent 20%),
+    linear-gradient(135deg,#160000 0%,#5a0000 45%,#d60000 100%);
+  color:#fff;
+  font-weight:1000;
+  box-shadow:0 0 14px rgba(190,0,0,.35);
+  transition:.18s ease;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 0 22px rgba(255,0,0,.55);
+  filter:brightness(1.08);
+}
+
+button.secondary{
+  background:linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);
+}
+
+button.isOff{
+  opacity:.55;
+}
+
+.chatgptBtnWrap{
+  width:100%;
+  margin-bottom:0;
+}
+
+.chatgptBtnWrap a{
+  display:block;
+  width:100%;
+  padding:14px 18px;
+  border-radius:9px;
+  text-align:center;
+  text-decoration:none;
+  font-weight:1000;
+  color:#fff;
+  border:1px solid rgba(255,0,0,.75);
+  background:
+    radial-gradient(circle at 18% 20%,rgba(255,255,255,.2),transparent 16%),
+    linear-gradient(135deg,#080808 0%,#290000 42%,#b30000 100%);
+  box-shadow:0 0 20px rgba(210,0,0,.45);
+  transition:.2s ease;
+}
+
+.chatgptBtnWrap a:hover{
+  transform:translateY(-1px);
+  box-shadow:0 0 26px rgba(255,0,0,.65);
+  filter:brightness(1.1);
 }
 
 .previewWrap{
@@ -173,7 +190,9 @@ button.isOff{opacity:.55}
   touch-action:none;
 }
 
-.draggable:active{cursor:grabbing}
+.draggable:active{
+  cursor:grabbing;
+}
 
 .textImg{
   display:block;
@@ -250,7 +269,9 @@ button.isOff{opacity:.55}
   display:block;
 }
 
-.hiddenPosterElement{display:none!important}
+.hiddenPosterElement{
+  display:none!important;
+}
 
 .grain{
   position:absolute;
@@ -268,7 +289,7 @@ button.isOff{opacity:.55}
 <body>
 
 <div class="panel">
-  <h1>☁️🔴暁 Générateur affiche Match Officiel ☁️🔴暁</h1>
+  <h1>☁️ 🔴 暁 Générateur affiche Match Officiel ☁️ 🔴 暁</h1>
 
   <div class="field">
     <label>Image de fond</label>
@@ -280,6 +301,7 @@ button.isOff{opacity:.55}
       <label>Logo créa 1</label>
       <input id="avatar1Input" type="file" accept="image/*">
     </div>
+
     <div class="field">
       <label>Logo créa 2</label>
       <input id="avatar2Input" type="file" accept="image/*">
@@ -291,6 +313,7 @@ button.isOff{opacity:.55}
       <label>Texte bulle créa 1</label>
       <input id="handle1Text" value="@créa 1">
     </div>
+
     <div class="field">
       <label>Texte bulle créa 2</label>
       <input id="handle2Text" value="@créa 2">
@@ -302,6 +325,7 @@ button.isOff{opacity:.55}
       <label>Taille rond créa 1</label>
       <input id="bubble1Size" type="range" min="80" max="190" value="126">
     </div>
+
     <div class="field">
       <label>Taille rond créa 2</label>
       <input id="bubble2Size" type="range" min="80" max="190" value="126">
@@ -313,6 +337,7 @@ button.isOff{opacity:.55}
       <label>Taille texte bulle créa 1</label>
       <input id="bubble1TextSize" type="range" min="8" max="28" value="13">
     </div>
+
     <div class="field">
       <label>Taille texte bulle créa 2</label>
       <input id="bubble2TextSize" type="range" min="8" max="28" value="13">
@@ -324,6 +349,7 @@ button.isOff{opacity:.55}
       <label>Rotation texte créa 1</label>
       <input id="bubble1Angle" type="range" min="0" max="360" value="110">
     </div>
+
     <div class="field">
       <label>Rotation texte créa 2</label>
       <input id="bubble2Angle" type="range" min="0" max="360" value="110">
@@ -340,6 +366,7 @@ button.isOff{opacity:.55}
       <label>Couleur texte</label>
       <input id="mainColor" type="color" value="#ffffff">
     </div>
+
     <div class="field">
       <label>Couleur VS</label>
       <input id="vsColor" type="color" value="#ff4b00">
@@ -360,13 +387,10 @@ button.isOff{opacity:.55}
     <button id="resetBtn" class="secondary">Réinitialiser positions</button>
   </div>
 
- <div class="btns">
- <div class="chatgptBtnWrap">
   <div class="chatgptBtnWrap">
-  <a href="https://chatgpt.com" target="_blank">
-    ☁️🔴暁 Invoquer ChatGPT pour l’Akatsuki☁️🔴暁
-  </a>
-  </div>
+    <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
+      ☁️ 🔴 暁 Invoquer ChatGPT pour l’Akatsuki ☁️ 🔴 暁
+    </a>
   </div>
 </div>
 
@@ -375,11 +399,11 @@ button.isOff{opacity:.55}
     <div class="bg" id="bg"></div>
     <div class="overlay"></div>
 
-    <div id="titleBox" class="draggable"><img id="titleImg" class="textImg"></div>
-    <div id="dateBox" class="draggable"><img id="dateImg" class="textImg"></div>
-    <div id="timeBox" class="draggable"><img id="timeImg" class="textImg"></div>
-    <div id="vsBox" class="draggable"><img id="vsImg" class="textImg"></div>
-    <div id="boostBox" class="draggable"><img id="boostImg" class="textImg"></div>
+    <div id="titleBox" class="draggable"><img id="titleImg" class="textImg" alt=""></div>
+    <div id="dateBox" class="draggable"><img id="dateImg" class="textImg" alt=""></div>
+    <div id="timeBox" class="draggable"><img id="timeImg" class="textImg" alt=""></div>
+    <div id="vsBox" class="draggable"><img id="vsImg" class="textImg" alt=""></div>
+    <div id="boostBox" class="draggable"><img id="boostImg" class="textImg" alt=""></div>
 
     <div id="bubble1" class="bubble draggable">
       <svg class="circleText" viewBox="0 0 126 126">
@@ -390,7 +414,7 @@ button.isOff{opacity:.55}
           <textPath id="circleText1" href="#circlePath1" startOffset="50%" text-anchor="middle">@créa 1</textPath>
         </text>
       </svg>
-      <div class="bubbleInner"><img id="avatar1Img"></div>
+      <div class="bubbleInner"><img id="avatar1Img" alt=""></div>
     </div>
 
     <div id="bubble2" class="bubble draggable">
@@ -402,7 +426,7 @@ button.isOff{opacity:.55}
           <textPath id="circleText2" href="#circlePath2" startOffset="50%" text-anchor="middle">@créa 2</textPath>
         </text>
       </svg>
-      <div class="bubbleInner"><img id="avatar2Img"></div>
+      <div class="bubbleInner"><img id="avatar2Img" alt=""></div>
     </div>
 
     <div id="agencyBox">
@@ -686,7 +710,6 @@ function applyAgencySize(){
 
   box.style.width = size + "px";
   box.style.height = size + "px";
-
   box.style.left = AGENCY_MARGIN + "px";
   box.style.top = Math.max(AGENCY_MARGIN, POSTER_H - size - AGENCY_MARGIN) + "px";
 }
