@@ -1,32 +1,30 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Générateur affiche Match Officiel</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lobster&family=Pacifico&family=Alex+Brush&family=Anton&display=swap");
+
 :root{
-  --poster-w: 493px;
-  --poster-h: 700px;
-  --font-main: "Great Vibes", cursive;
-  --font-bold: Georgia, serif;
+  --poster-w:493px;
+  --poster-h:700px;
 }
+
+*{box-sizing:border-box}
 
 html,body{
   margin:0;
-  padding:0;
   background:transparent;
-  color:#fff;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-family:system-ui,Arial,sans-serif;
+  color:white;
 }
 
 body{
   display:flex;
-  gap:24px;
+  gap:28px;
   flex-wrap:wrap;
   justify-content:center;
   align-items:flex-start;
@@ -34,23 +32,21 @@ body{
 }
 
 .panel{
-  width:min(540px,95vw);
+  width:min(560px,95vw);
   background:rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.2);
   border-radius:16px;
   padding:16px;
 }
 
-.panel h1{
-  margin:0 0 14px;
-  font-size:20px;
+h1{
+  margin:0 0 16px;
+  font-size:21px;
 }
 
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
-  margin-bottom:12px;
 }
 
 .field{
@@ -62,34 +58,34 @@ body{
 
 label{
   font-size:12px;
-  font-weight:700;
+  font-weight:800;
 }
 
 input,select,button{
   width:100%;
-  box-sizing:border-box;
   padding:10px;
-  border-radius:10px;
+  border-radius:9px;
   border:1px solid rgba(255,255,255,.25);
   background:rgba(0,0,0,.45);
-  color:#fff;
+  color:white;
+  font-weight:700;
 }
 
-input[type="color"]{
+input[type=color]{
   height:42px;
   padding:4px;
 }
 
 button{
   cursor:pointer;
-  font-weight:900;
-  background:linear-gradient(180deg,#f7e08c,#c79724);
-  color:#1b1200;
+  background:linear-gradient(#f8df7b,#c79a25);
+  color:#1d1500;
+  font-weight:1000;
 }
 
 button.secondary{
   background:rgba(0,0,0,.45);
-  color:#fff;
+  color:white;
 }
 
 .previewWrap{
@@ -103,9 +99,9 @@ button.secondary{
   height:var(--poster-h);
   position:relative;
   overflow:hidden;
-  background:#111;
-  box-shadow:0 20px 60px rgba(0,0,0,.65);
-  isolation:isolate;
+  background:#080808;
+  box-shadow:0 22px 60px rgba(0,0,0,.55);
+  user-select:none;
 }
 
 .bg{
@@ -116,130 +112,96 @@ button.secondary{
   z-index:0;
 }
 
-.redOverlay{
+.overlay{
   position:absolute;
   inset:0;
   z-index:1;
   pointer-events:none;
   background:
-    radial-gradient(circle at 50% 40%,rgba(255,60,0,.22),transparent 45%),
-    radial-gradient(circle at 50% 50%,transparent 35%,rgba(0,0,0,.5) 100%),
-    linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.05),rgba(0,0,0,.55));
-  mix-blend-mode:multiply;
+    radial-gradient(circle at 50% 45%,rgba(255,80,0,.18),transparent 40%),
+    radial-gradient(circle at 50% 50%,transparent 30%,rgba(0,0,0,.65) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.08),rgba(0,0,0,.48));
+}
+
+.draggable{
+  position:absolute;
+  z-index:5;
+  cursor:grab;
+  touch-action:none;
+}
+
+.draggable:active{
+  cursor:grabbing;
 }
 
 .textImg{
-  position:absolute;
-  z-index:5;
+  display:block;
   pointer-events:none;
-  max-width:none;
 }
 
-#titleImg{
-  left:16px;
-  top:8px;
-  width:460px;
+#titleBox{left:25px;top:25px;width:445px}
+#dateBox{left:120px;top:150px;width:255px}
+#timeBox{left:183px;top:197px;width:125px}
+#vsBox{left:202px;top:455px;width:90px}
+#boostBox{left:95px;top:600px;width:305px}
+
+.bubble{
+  width:126px;
+  height:126px;
 }
 
-#dateImg{
-  left:126px;
-  top:126px;
-  width:285px;
-}
-
-#timeImg{
-  left:176px;
-  top:174px;
-  width:145px;
-}
-
-#vsImg{
-  left:202px;
-  top:438px;
-  width:92px;
-}
-
-#boostImg{
-  left:106px;
-  bottom:16px;
-  width:285px;
-}
-
-.creatorBadge{
+.bubbleInner{
   position:absolute;
-  z-index:6;
-  width:122px;
-  height:122px;
+  inset:18px;
   border-radius:50%;
+  border:4px solid #d7a62a;
   overflow:hidden;
-  border:3px solid #d7a72d;
-  box-shadow:0 8px 22px rgba(0,0,0,.65);
   background:#222;
+  box-shadow:0 10px 25px rgba(0,0,0,.65);
 }
 
-.creatorBadge img{
+.bubbleInner img{
   width:100%;
   height:100%;
   object-fit:cover;
+  display:block;
 }
 
-#creator1Badge{
-  left:40px;
-  top:302px;
-}
-
-#creator2Badge{
-  right:42px;
-  top:468px;
-}
-
-.handle{
+.circleText{
   position:absolute;
-  z-index:7;
-  font-size:22px;
+  inset:0;
+  overflow:visible;
+  pointer-events:none;
+}
+
+.circleText text{
+  fill:#fff;
+  font-family:Impact,Arial Black,sans-serif;
+  font-size:15px;
   font-weight:900;
-  color:white;
-  text-shadow:
-    3px 3px 0 #000,
-    -2px -2px 0 #000,
-    0 0 8px #000;
-  transform:rotate(-28deg);
-  white-space:nowrap;
+  letter-spacing:.8px;
+  paint-order:stroke;
+  stroke:#000;
+  stroke-width:4px;
+  stroke-linejoin:round;
 }
 
-#handle1Preview{
-  left:24px;
-  top:414px;
-}
+#bubble1{left:45px;top:305px}
+#bubble2{left:325px;top:475px}
+#agencyBox{left:25px;top:620px;width:78px;height:78px}
 
-#handle2Preview{
-  right:20px;
-  top:582px;
-  transform:rotate(25deg);
-}
-
-#agencyBadge{
-  position:absolute;
-  left:24px;
-  bottom:22px;
-  width:76px;
-  height:76px;
-  border-radius:50%;
-  overflow:hidden;
-  z-index:6;
-}
-
-#agencyBadge img{
+#agencyBox img{
   width:100%;
   height:100%;
+  border-radius:50%;
   object-fit:cover;
 }
 
 .grain{
   position:absolute;
   inset:-20%;
-  z-index:10;
-  opacity:.12;
+  z-index:20;
+  opacity:.11;
   pointer-events:none;
   background-image:radial-gradient(rgba(255,255,255,.4) 1px,transparent 1px);
   background-size:6px 6px;
@@ -247,12 +209,15 @@ button.secondary{
 }
 
 .btns{
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   gap:10px;
 }
 
-.btns button{
-  flex:1;
+.help{
+  font-size:12px;
+  opacity:.9;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -270,11 +235,11 @@ button.secondary{
   <div class="row">
     <div class="field">
       <label>Logo / avatar créa 1</label>
-      <input id="creator1Input" type="file" accept="image/*">
+      <input id="avatar1Input" type="file" accept="image/*">
     </div>
     <div class="field">
       <label>Logo / avatar créa 2</label>
-      <input id="creator2Input" type="file" accept="image/*">
+      <input id="avatar2Input" type="file" accept="image/*">
     </div>
   </div>
 
@@ -286,89 +251,107 @@ button.secondary{
   <div class="row">
     <div class="field">
       <label>Titre</label>
-      <input id="titleText" type="text" value="Match officiel">
+      <input id="titleText" value="Match officiel">
     </div>
     <div class="field">
       <label>Texte boost</label>
-      <input id="boostText" type="text" value="sans boost">
+      <input id="boostText" value="sans boost">
     </div>
   </div>
 
   <div class="row">
     <div class="field">
       <label>Date</label>
-      <input id="dateText" type="text" value="Jeudi 09 Avril">
+      <input id="dateText" value="Jeudi 09 Avril">
     </div>
     <div class="field">
       <label>Heure</label>
-      <input id="timeText" type="text" value="21 h 30">
+      <input id="timeText" value="21 h 30">
     </div>
   </div>
 
   <div class="row">
     <div class="field">
-      <label>@ créa 1</label>
-      <input id="handle1" type="text" value="@pierrotlefouuuu">
+      <label>Texte bulle 1</label>
+      <input id="handle1Text" value="@pierrotlefouuuu">
     </div>
     <div class="field">
-      <label>@ créa 2</label>
-      <input id="handle2" type="text" value="@www.rafiki.com">
+      <label>Texte bulle 2</label>
+      <input id="handle2Text" value="@www.rafiki.com">
     </div>
   </div>
 
   <div class="row">
     <div class="field">
-      <label>Couleur texte principal</label>
+      <label>Couleur texte</label>
       <input id="mainColor" type="color" value="#ffffff">
     </div>
     <div class="field">
       <label>Couleur VS</label>
-      <input id="vsColor" type="color" value="#ff5a00">
+      <input id="vsColor" type="color" value="#ff4b00">
     </div>
   </div>
 
   <div class="field">
-    <label>Police</label>
+    <label>Police titre / date / heure</label>
     <select id="fontSelect">
-      <option value='"Great Vibes", cursive' data-google="Great+Vibes" selected>Great Vibes</option>
-      <option value='"Lobster", cursive' data-google="Lobster">Lobster</option>
-      <option value='"Pacifico", cursive' data-google="Pacifico">Pacifico</option>
-      <option value='"Alex Brush", cursive' data-google="Alex+Brush">Alex Brush</option>
-      <option value='Georgia, serif'>Georgia</option>
+      <option value='"Great Vibes", cursive'>Great Vibes</option>
+      <option value='"Lobster", cursive" selected>Lobster</option>
+      <option value='"Pacifico", cursive'>Pacifico</option>
+      <option value='"Alex Brush", cursive'>Alex Brush</option>
+      <option value='"Anton", sans-serif'>Anton</option>
       <option value='Impact, sans-serif'>Impact</option>
+      <option value='Georgia, serif'>Georgia</option>
     </select>
   </div>
 
   <div class="btns">
     <button id="downloadBtn">Télécharger PNG</button>
-    <button id="resetBtn" class="secondary">Réinitialiser</button>
+    <button id="resetBtn" class="secondary">Réinitialiser positions</button>
+  </div>
+
+  <div class="help">
+    Astuce : tu peux déplacer le titre, la date, l’heure, VS, les bulles et le logo en glissant avec la souris.
   </div>
 </div>
 
 <div class="previewWrap">
   <div class="poster" id="poster">
     <div class="bg" id="bg"></div>
-    <div class="redOverlay"></div>
+    <div class="overlay"></div>
 
-    <img id="titleImg" class="textImg" alt="">
-    <img id="dateImg" class="textImg" alt="">
-    <img id="timeImg" class="textImg" alt="">
-    <img id="vsImg" class="textImg" alt="">
-    <img id="boostImg" class="textImg" alt="">
+    <div id="titleBox" class="draggable"><img id="titleImg" class="textImg"></div>
+    <div id="dateBox" class="draggable"><img id="dateImg" class="textImg"></div>
+    <div id="timeBox" class="draggable"><img id="timeImg" class="textImg"></div>
+    <div id="vsBox" class="draggable"><img id="vsImg" class="textImg"></div>
+    <div id="boostBox" class="draggable"><img id="boostImg" class="textImg"></div>
 
-    <div class="creatorBadge" id="creator1Badge">
-      <img id="creator1Img" alt="">
+    <div id="bubble1" class="bubble draggable">
+      <svg class="circleText" viewBox="0 0 126 126">
+        <defs>
+          <path id="circlePath1" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
+        </defs>
+        <text>
+          <textPath id="circleText1" href="#circlePath1" startOffset="63%" text-anchor="middle">@pierrotlefouuuu</textPath>
+        </text>
+      </svg>
+      <div class="bubbleInner"><img id="avatar1Img"></div>
     </div>
 
-    <div class="creatorBadge" id="creator2Badge">
-      <img id="creator2Img" alt="">
+    <div id="bubble2" class="bubble draggable">
+      <svg class="circleText" viewBox="0 0 126 126">
+        <defs>
+          <path id="circlePath2" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
+        </defs>
+        <text>
+          <textPath id="circleText2" href="#circlePath2" startOffset="63%" text-anchor="middle">@www.rafiki.com</textPath>
+        </text>
+      </svg>
+      <div class="bubbleInner"><img id="avatar2Img"></div>
     </div>
 
-    <div id="handle1Preview" class="handle">@pierrotlefouuuu</div>
-    <div id="handle2Preview" class="handle">@www.rafiki.com</div>
-
-    <div id="agencyBadge">
-      <img id="agencyImg" alt="">
+    <div id="agencyBox" class="draggable">
+      <img id="agencyImg">
     </div>
 
     <div class="grain"></div>
@@ -378,57 +361,45 @@ button.secondary{
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
-const bgInput = document.getElementById("bgInput");
-const creator1Input = document.getElementById("creator1Input");
-const creator2Input = document.getElementById("creator2Input");
-const agencyInput = document.getElementById("agencyInput");
+const $ = id => document.getElementById(id);
 
-const bg = document.getElementById("bg");
-const creator1Img = document.getElementById("creator1Img");
-const creator2Img = document.getElementById("creator2Img");
-const agencyImg = document.getElementById("agencyImg");
+const inputs = {
+  bg: $("bgInput"),
+  avatar1: $("avatar1Input"),
+  avatar2: $("avatar2Input"),
+  agency: $("agencyInput"),
+  title: $("titleText"),
+  date: $("dateText"),
+  time: $("timeText"),
+  boost: $("boostText"),
+  handle1: $("handle1Text"),
+  handle2: $("handle2Text"),
+  mainColor: $("mainColor"),
+  vsColor: $("vsColor"),
+  font: $("fontSelect")
+};
 
-const titleText = document.getElementById("titleText");
-const dateText = document.getElementById("dateText");
-const timeText = document.getElementById("timeText");
-const boostText = document.getElementById("boostText");
-const handle1 = document.getElementById("handle1");
-const handle2 = document.getElementById("handle2");
+const imgs = {
+  title: $("titleImg"),
+  date: $("dateImg"),
+  time: $("timeImg"),
+  vs: $("vsImg"),
+  boost: $("boostImg"),
+  avatar1: $("avatar1Img"),
+  avatar2: $("avatar2Img"),
+  agency: $("agencyImg")
+};
 
-const handle1Preview = document.getElementById("handle1Preview");
-const handle2Preview = document.getElementById("handle2Preview");
-
-const titleImg = document.getElementById("titleImg");
-const dateImg = document.getElementById("dateImg");
-const timeImg = document.getElementById("timeImg");
-const vsImg = document.getElementById("vsImg");
-const boostImg = document.getElementById("boostImg");
-
-const mainColor = document.getElementById("mainColor");
-const vsColor = document.getElementById("vsColor");
-const fontSelect = document.getElementById("fontSelect");
-
-const downloadBtn = document.getElementById("downloadBtn");
-const resetBtn = document.getElementById("resetBtn");
-
-function ensureGoogleFontLoaded(value){
-  if(!value) return;
-  const id = "gf-" + value.replace(/[^a-z0-9]/gi,"");
-  if(document.getElementById(id)) return;
-
-  const link = document.createElement("link");
-  link.id = id;
-  link.rel = "stylesheet";
-  link.href = "https://fonts.googleapis.com/css2?family=" + value + "&display=swap";
-  document.head.appendChild(link);
-}
-
-function getFont(){
-  const opt = fontSelect.options[fontSelect.selectedIndex];
-  const google = opt.getAttribute("data-google");
-  ensureGoogleFontLoaded(google);
-  return opt.value;
-}
+const defaultPositions = {
+  titleBox:{x:25,y:25},
+  dateBox:{x:120,y:150},
+  timeBox:{x:183,y:197},
+  vsBox:{x:202,y:455},
+  boostBox:{x:95,y:600},
+  bubble1:{x:45,y:305},
+  bubble2:{x:325,y:475},
+  agencyBox:{x:25,y:620}
+};
 
 function fileToDataURL(file){
   return new Promise((resolve,reject)=>{
@@ -439,220 +410,342 @@ function fileToDataURL(file){
   });
 }
 
-async function setImageFromInput(input,img,callback){
-  const file = input.files && input.files[0];
-  if(!file) return;
-  const url = await fileToDataURL(file);
-  if(callback) callback(url);
-  else img.src = url;
-  saveAll();
+function clampText(text,max){
+  text = String(text || "").trim();
+  if(text.length <= max) return text;
+  return text.slice(0,max - 1) + "…";
 }
 
-function renderTextToImage(imgEl, options){
-  const {
-    text,
-    fontFamily,
-    fontSize,
-    color,
-    strokeColor = "#000",
-    strokeWidth = 8,
-    shadowColor = "rgba(0,0,0,.75)",
-    shadowBlur = 8,
-    shadowY = 4,
-    letterSpacing = 0,
-    italic = false,
-    weight = 700,
-    padX = 30,
-    padY = 22,
-    gradient = false,
-    gradientColor1 = "#fff",
-    gradientColor2 = "#d9d9d9"
-  } = options;
-
+function renderTextToImg(img,{
+  text,
+  fontFamily,
+  maxWidth,
+  startSize,
+  minSize,
+  color,
+  strokeColor="#000",
+  strokeWidth=8,
+  weight=900,
+  italic=false,
+  shadowColor="rgba(0,0,0,.75)",
+  shadowBlur=8,
+  shadowY=5,
+  padX=28,
+  padY=22,
+  letterSpacing=0,
+  gradient=false,
+  g1="#fff",
+  g2="#ddd"
+}){
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const dpr = Math.max(2, window.devicePixelRatio || 2);
 
-  const fontStyle = `${italic ? "italic" : "normal"} ${weight} ${fontSize}px ${fontFamily}`;
-  ctx.font = fontStyle;
+  text = text || "";
 
-  const chars = [...text];
-  let width = 0;
-  chars.forEach((ch,i)=>{
-    width += ctx.measureText(ch).width;
-    if(i < chars.length - 1) width += letterSpacing;
-  });
+  let size = startSize;
 
-  const height = fontSize * 1.35;
-  canvas.width = Math.ceil((width + padX * 2) * dpr);
-  canvas.height = Math.ceil((height + padY * 2) * dpr);
+  function setFont(){
+    ctx.font = `${italic ? "italic" : "normal"} ${weight} ${size}px ${fontFamily}`;
+  }
+
+  function measure(){
+    setFont();
+    const chars = [...text];
+    let w = 0;
+    chars.forEach((ch,i)=>{
+      w += ctx.measureText(ch).width;
+      if(i < chars.length - 1) w += letterSpacing;
+    });
+    return w;
+  }
+
+  let textW = measure();
+
+  while(textW > maxWidth - padX * 2 && size > minSize){
+    size -= 2;
+    textW = measure();
+  }
+
+  const textH = size * 1.35;
+  const w = Math.ceil((textW + padX * 2) * dpr);
+  const h = Math.ceil((textH + padY * 2) * dpr);
+
+  canvas.width = w;
+  canvas.height = h;
 
   ctx.scale(dpr,dpr);
-  ctx.font = fontStyle;
+  setFont();
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.lineJoin = "round";
   ctx.miterLimit = 2;
 
-  const cx = (width + padX * 2) / 2;
-  const cy = (height + padY * 2) / 2;
+  const cx = (textW + padX * 2) / 2;
+  const cy = (textH + padY * 2) / 2;
 
   let fill = color;
+
   if(gradient){
-    const grad = ctx.createLinearGradient(0,0,width + padX * 2,0);
-    grad.addColorStop(0,gradientColor1);
-    grad.addColorStop(.5,color);
-    grad.addColorStop(1,gradientColor2);
+    const grad = ctx.createLinearGradient(0,0,textW + padX * 2,0);
+    grad.addColorStop(0,g1);
+    grad.addColorStop(.45,color);
+    grad.addColorStop(1,g2);
     fill = grad;
   }
 
-  function drawChars(mode){
-    let x = cx - width / 2;
+  const chars = [...text];
+
+  function draw(mode){
+    let x = cx - textW / 2;
     chars.forEach((ch,i)=>{
-      const w = ctx.measureText(ch).width;
-      const mid = x + w / 2;
+      const cw = ctx.measureText(ch).width;
+      const mid = x + cw / 2;
       if(mode === "stroke") ctx.strokeText(ch,mid,cy);
       else ctx.fillText(ch,mid,cy);
-      x += w + letterSpacing;
+      x += cw + letterSpacing;
     });
   }
 
+  ctx.shadowColor = "transparent";
   ctx.lineWidth = strokeWidth;
   ctx.strokeStyle = strokeColor;
-  ctx.shadowBlur = 0;
-  drawChars("stroke");
+  draw("stroke");
 
   ctx.fillStyle = fill;
   ctx.shadowColor = shadowColor;
   ctx.shadowBlur = shadowBlur;
   ctx.shadowOffsetY = shadowY;
-  drawChars("fill");
+  draw("fill");
 
-  imgEl.src = canvas.toDataURL("image/png");
+  img.src = canvas.toDataURL("image/png");
+  img.style.width = "100%";
 }
 
-async function renderAllTexts(){
-  const font = getFont();
+async function renderAll(){
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
 
-  renderTextToImage(titleImg,{
-    text:titleText.value || "Match officiel",
+  const font = inputs.font.value;
+  const color = inputs.mainColor.value;
+
+  renderTextToImg(imgs.title,{
+    text:clampText(inputs.title.value,28),
     fontFamily:font,
-    fontSize:82,
-    color:mainColor.value,
-    strokeColor:"#000",
-    strokeWidth:9,
-    shadowBlur:7,
-    letterSpacing:0,
-    weight:700,
-    padX:35,
-    padY:24
+    maxWidth:445,
+    startSize:82,
+    minSize:34,
+    color,
+    strokeWidth:10,
+    padX:34
   });
 
-  renderTextToImage(dateImg,{
-    text:dateText.value || "Jeudi 09 Avril",
+  renderTextToImg(imgs.date,{
+    text:clampText(inputs.date.value,28),
     fontFamily:font,
-    fontSize:44,
-    color:mainColor.value,
-    strokeColor:"#000",
-    strokeWidth:6,
-    shadowBlur:5,
-    weight:700,
-    padX:25,
-    padY:18
+    maxWidth:255,
+    startSize:44,
+    minSize:24,
+    color,
+    strokeWidth:7
   });
 
-  renderTextToImage(timeImg,{
-    text:timeText.value || "21 h 30",
+  renderTextToImg(imgs.time,{
+    text:clampText(inputs.time.value,16),
     fontFamily:font,
-    fontSize:42,
-    color:mainColor.value,
-    strokeColor:"#000",
-    strokeWidth:6,
-    shadowBlur:5,
-    weight:700,
-    padX:22,
-    padY:16
+    maxWidth:125,
+    startSize:44,
+    minSize:22,
+    color,
+    strokeWidth:7
   });
 
-  renderTextToImage(vsImg,{
+  renderTextToImg(imgs.vs,{
     text:"VS",
     fontFamily:"Impact, sans-serif",
-    fontSize:62,
-    color:vsColor.value,
-    strokeColor:"#8a1c00",
+    maxWidth:90,
+    startSize:64,
+    minSize:40,
+    color:inputs.vsColor.value,
+    strokeColor:"#8b1600",
     strokeWidth:4,
-    shadowColor:"rgba(255,120,0,.8)",
+    italic:true,
+    shadowColor:"rgba(255,90,0,.9)",
     shadowBlur:12,
     shadowY:0,
-    italic:true,
-    weight:900,
     gradient:true,
-    gradientColor1:"#fff000",
-    gradientColor2:"#ff2400",
-    padX:18,
-    padY:14
+    g1:"#fff000",
+    g2:"#ff2400",
+    padX:12,
+    padY:12
   });
 
-  renderTextToImage(boostImg,{
-    text:boostText.value || "sans boost",
+  renderTextToImg(imgs.boost,{
+    text:clampText(inputs.boost.value,24),
     fontFamily:"Georgia, serif",
-    fontSize:50,
-    color:mainColor.value,
-    strokeColor:"#000",
-    strokeWidth:7,
-    shadowBlur:4,
-    weight:900,
-    padX:24,
-    padY:16
+    maxWidth:305,
+    startSize:58,
+    minSize:28,
+    color,
+    strokeWidth:8,
+    padX:24
+  });
+
+  $("circleText1").textContent = clampText(inputs.handle1.value,24);
+  $("circleText2").textContent = clampText(inputs.handle2.value,24);
+}
+
+function saveText(){
+  const data = {
+    title:inputs.title.value,
+    date:inputs.date.value,
+    time:inputs.time.value,
+    boost:inputs.boost.value,
+    handle1:inputs.handle1.value,
+    handle2:inputs.handle2.value,
+    mainColor:inputs.mainColor.value,
+    vsColor:inputs.vsColor.value,
+    font:inputs.font.value
+  };
+  localStorage.setItem("matchPosterText",JSON.stringify(data));
+}
+
+function restoreText(){
+  try{
+    const data = JSON.parse(localStorage.getItem("matchPosterText") || "{}");
+    if(data.title) inputs.title.value = data.title;
+    if(data.date) inputs.date.value = data.date;
+    if(data.time) inputs.time.value = data.time;
+    if(data.boost) inputs.boost.value = data.boost;
+    if(data.handle1) inputs.handle1.value = data.handle1;
+    if(data.handle2) inputs.handle2.value = data.handle2;
+    if(data.mainColor) inputs.mainColor.value = data.mainColor;
+    if(data.vsColor) inputs.vsColor.value = data.vsColor;
+    if(data.font) inputs.font.value = data.font;
+  }catch(e){}
+}
+
+function savePositions(){
+  const data = {};
+  document.querySelectorAll(".draggable").forEach(el=>{
+    data[el.id] = {
+      x:parseFloat(el.style.left) || el.offsetLeft,
+      y:parseFloat(el.style.top) || el.offsetTop
+    };
+  });
+  localStorage.setItem("matchPosterPositions",JSON.stringify(data));
+}
+
+function restorePositions(){
+  let data = defaultPositions;
+  try{
+    data = {
+      ...defaultPositions,
+      ...(JSON.parse(localStorage.getItem("matchPosterPositions") || "{}"))
+    };
+  }catch(e){}
+
+  Object.entries(data).forEach(([id,pos])=>{
+    const el = $(id);
+    if(!el) return;
+    el.style.left = pos.x + "px";
+    el.style.top = pos.y + "px";
   });
 }
 
-function refreshHandles(){
-  handle1Preview.textContent = handle1.value || "@créa1";
-  handle2Preview.textContent = handle2.value || "@créa2";
-}
+function makeDraggable(el){
+  let startX = 0;
+  let startY = 0;
+  let baseX = 0;
+  let baseY = 0;
 
-function saveAll(){
-  try{
-    localStorage.setItem("titleText",titleText.value);
-    localStorage.setItem("dateText",dateText.value);
-    localStorage.setItem("timeText",timeText.value);
-    localStorage.setItem("boostText",boostText.value);
-    localStorage.setItem("handle1",handle1.value);
-    localStorage.setItem("handle2",handle2.value);
-    localStorage.setItem("mainColor",mainColor.value);
-    localStorage.setItem("vsColor",vsColor.value);
-    localStorage.setItem("font",fontSelect.value);
-  }catch(e){}
-}
+  el.addEventListener("pointerdown",e=>{
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
 
-function restoreAll(){
-  try{
-    if(localStorage.getItem("titleText")) titleText.value = localStorage.getItem("titleText");
-    if(localStorage.getItem("dateText")) dateText.value = localStorage.getItem("dateText");
-    if(localStorage.getItem("timeText")) timeText.value = localStorage.getItem("timeText");
-    if(localStorage.getItem("boostText")) boostText.value = localStorage.getItem("boostText");
-    if(localStorage.getItem("handle1")) handle1.value = localStorage.getItem("handle1");
-    if(localStorage.getItem("handle2")) handle2.value = localStorage.getItem("handle2");
-    if(localStorage.getItem("mainColor")) mainColor.value = localStorage.getItem("mainColor");
-    if(localStorage.getItem("vsColor")) vsColor.value = localStorage.getItem("vsColor");
+    startX = e.clientX;
+    startY = e.clientY;
+    baseX = parseFloat(el.style.left) || el.offsetLeft;
+    baseY = parseFloat(el.style.top) || el.offsetTop;
 
-    const savedFont = localStorage.getItem("font");
-    if(savedFont){
-      for(let i=0;i<fontSelect.options.length;i++){
-        if(fontSelect.options[i].value === savedFont){
-          fontSelect.selectedIndex = i;
-          break;
-        }
-      }
+    el.style.zIndex = 30;
+  });
+
+  el.addEventListener("pointermove",e=>{
+    if(!el.hasPointerCapture(e.pointerId)) return;
+
+    const poster = $("poster");
+    const rect = poster.getBoundingClientRect();
+    const scaleX = 493 / rect.width;
+    const scaleY = 700 / rect.height;
+
+    let x = baseX + (e.clientX - startX) * scaleX;
+    let y = baseY + (e.clientY - startY) * scaleY;
+
+    x = Math.max(-80,Math.min(493 - 20,x));
+    y = Math.max(-80,Math.min(700 - 20,y));
+
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+  });
+
+  el.addEventListener("pointerup",e=>{
+    if(el.hasPointerCapture(e.pointerId)){
+      el.releasePointerCapture(e.pointerId);
     }
-  }catch(e){}
+    el.style.zIndex = "";
+    savePositions();
+  });
 }
+
+async function loadFile(input,callback){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const url = await fileToDataURL(file);
+  callback(url);
+}
+
+inputs.bg.addEventListener("change",()=>{
+  loadFile(inputs.bg,url=>{
+    $("bg").style.backgroundImage = `url("${url}")`;
+  });
+});
+
+inputs.avatar1.addEventListener("change",()=>{
+  loadFile(inputs.avatar1,url=>imgs.avatar1.src = url);
+});
+
+inputs.avatar2.addEventListener("change",()=>{
+  loadFile(inputs.avatar2,url=>imgs.avatar2.src = url);
+});
+
+inputs.agency.addEventListener("change",()=>{
+  loadFile(inputs.agency,url=>imgs.agency.src = url);
+});
+
+[
+  inputs.title,
+  inputs.date,
+  inputs.time,
+  inputs.boost,
+  inputs.handle1,
+  inputs.handle2,
+  inputs.mainColor,
+  inputs.vsColor,
+  inputs.font
+].forEach(el=>{
+  el.addEventListener("input",async()=>{
+    await renderAll();
+    saveText();
+  });
+  el.addEventListener("change",async()=>{
+    await renderAll();
+    saveText();
+  });
+});
 
 async function waitForImages(container){
-  const imgs = Array.from(container.querySelectorAll("img"));
-  await Promise.all(imgs.map(img=>{
+  const images = Array.from(container.querySelectorAll("img"));
+  await Promise.all(images.map(img=>{
     if(!img.src) return Promise.resolve();
     if(img.complete && img.naturalWidth > 0) return Promise.resolve();
     return new Promise(resolve=>{
@@ -662,10 +755,9 @@ async function waitForImages(container){
   }));
 }
 
-async function exportPNG(){
-  await renderAllTexts();
-
-  const poster = document.getElementById("poster");
+$("downloadBtn").addEventListener("click",async()=>{
+  const poster = $("poster");
+  await renderAll();
 
   if(document.fonts && document.fonts.ready) await document.fonts.ready;
   await waitForImages(poster);
@@ -678,95 +770,22 @@ async function exportPNG(){
     height:700
   });
 
-  const link = document.createElement("a");
-  link.href = canvas.toDataURL("image/png");
-  link.download = "affiche-match-officiel.png";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-}
-
-bgInput.addEventListener("change",()=>{
-  setImageFromInput(bgInput,null,(url)=>{
-    bg.style.backgroundImage = `url("${url}")`;
-  });
+  const a = document.createElement("a");
+  a.href = canvas.toDataURL("image/png");
+  a.download = "affiche-match-officiel.png";
+  a.click();
 });
 
-creator1Input.addEventListener("change",()=>{
-  setImageFromInput(creator1Input,creator1Img);
+$("resetBtn").addEventListener("click",()=>{
+  localStorage.removeItem("matchPosterPositions");
+  restorePositions();
 });
 
-creator2Input.addEventListener("change",()=>{
-  setImageFromInput(creator2Input,creator2Img);
-});
+document.querySelectorAll(".draggable").forEach(makeDraggable);
 
-agencyInput.addEventListener("change",()=>{
-  setImageFromInput(agencyInput,agencyImg);
-});
-
-[
-  titleText,
-  dateText,
-  timeText,
-  boostText,
-  mainColor,
-  vsColor,
-  fontSelect
-].forEach(el=>{
-  el.addEventListener("input",async()=>{
-    await renderAllTexts();
-    saveAll();
-  });
-  el.addEventListener("change",async()=>{
-    await renderAllTexts();
-    saveAll();
-  });
-});
-
-[handle1,handle2].forEach(el=>{
-  el.addEventListener("input",()=>{
-    refreshHandles();
-    saveAll();
-  });
-});
-
-downloadBtn.addEventListener("click",()=>{
-  exportPNG().catch(err=>{
-    console.error(err);
-    alert("Erreur pendant l’export PNG.");
-  });
-});
-
-resetBtn.addEventListener("click",async()=>{
-  bg.style.backgroundImage = "";
-  creator1Img.src = "";
-  creator2Img.src = "";
-  agencyImg.src = "";
-
-  bgInput.value = "";
-  creator1Input.value = "";
-  creator2Input.value = "";
-  agencyInput.value = "";
-
-  titleText.value = "Match officiel";
-  dateText.value = "Jeudi 09 Avril";
-  timeText.value = "21 h 30";
-  boostText.value = "sans boost";
-  handle1.value = "@pierrotlefouuuu";
-  handle2.value = "@www.rafiki.com";
-  mainColor.value = "#ffffff";
-  vsColor.value = "#ff5a00";
-  fontSelect.selectedIndex = 0;
-
-  try{ localStorage.clear(); }catch(e){}
-
-  refreshHandles();
-  await renderAllTexts();
-});
-
-restoreAll();
-refreshHandles();
-renderAllTexts();
+restoreText();
+restorePositions();
+renderAll();
 </script>
 
 </body>
