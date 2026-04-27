@@ -388,12 +388,12 @@ button.isOff{
   <div class="row">
     <div class="field">
       <label>Taille date</label>
-      <input id="dateSize" type="range" min="20" max="80" value="44">
+      <input id="dateSize" type="range" min="10" max="160" value="44">
     </div>
 
     <div class="field">
       <label>Taille heure</label>
-      <input id="timeSize" type="range" min="20" max="80" value="44">
+      <input id="timeSize" type="range" min="10" max="160" value="44">
     </div>
   </div>
 
@@ -635,7 +635,7 @@ async function renderAll(){
     text:$("dateText").value || "Jeudi 09 Avril",
     maxWidth:255,
     startSize:Number($("dateSize").value),
-    minSize:18,
+    minSize:8,
     color:mainColor,
     strokeWidth:7
   });
@@ -644,7 +644,7 @@ async function renderAll(){
     text:$("timeText").value || "21 h 30",
     maxWidth:125,
     startSize:Number($("timeSize").value),
-    minSize:18,
+    minSize:8,
     color:mainColor,
     strokeWidth:7
   });
