@@ -373,6 +373,30 @@ button.isOff{
     </div>
   </div>
 
+  <div class="row">
+    <div class="field">
+      <label>Modifier date</label>
+      <input id="dateText" value="Jeudi 09 Avril">
+    </div>
+
+    <div class="field">
+      <label>Modifier heure</label>
+      <input id="timeText" value="21 h 30">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Taille date</label>
+      <input id="dateSize" type="range" min="20" max="80" value="44">
+    </div>
+
+    <div class="field">
+      <label>Taille heure</label>
+      <input id="timeSize" type="range" min="20" max="80" value="44">
+    </div>
+  </div>
+
   <div class="btns">
     <button id="toggleTitleBtn">Titre : ON</button>
     <button id="toggleDateBtn">Date : ON</button>
@@ -608,19 +632,19 @@ async function renderAll(){
   });
 
   renderTextToImg($("dateImg"),{
-    text:"Jeudi 09 Avril",
+    text:$("dateText").value || "Jeudi 09 Avril",
     maxWidth:255,
-    startSize:44,
-    minSize:24,
+    startSize:Number($("dateSize").value),
+    minSize:18,
     color:mainColor,
     strokeWidth:7
   });
 
   renderTextToImg($("timeImg"),{
-    text:"21 h 30",
+    text:$("timeText").value || "21 h 30",
     maxWidth:125,
-    startSize:44,
-    minSize:22,
+    startSize:Number($("timeSize").value),
+    minSize:18,
     color:mainColor,
     strokeWidth:7
   });
@@ -770,6 +794,10 @@ function saveSettings(){
   const data = {
     handle1:$("handle1Text").value,
     handle2:$("handle2Text").value,
+    dateText:$("dateText").value,
+    timeText:$("timeText").value,
+    dateSize:$("dateSize").value,
+    timeSize:$("timeSize").value,
     mainColor:$("mainColor").value,
     vsColor:$("vsColor").value,
     bubble1Size:$("bubble1Size").value,
@@ -791,6 +819,10 @@ function restoreSettings(){
 
     if(data.handle1) $("handle1Text").value = data.handle1;
     if(data.handle2) $("handle2Text").value = data.handle2;
+    if(data.dateText) $("dateText").value = data.dateText;
+    if(data.timeText) $("timeText").value = data.timeText;
+    if(data.dateSize) $("dateSize").value = data.dateSize;
+    if(data.timeSize) $("timeSize").value = data.timeSize;
     if(data.mainColor) $("mainColor").value = data.mainColor;
     if(data.vsColor) $("vsColor").value = data.vsColor;
     if(data.bubble1Size) $("bubble1Size").value = data.bubble1Size;
@@ -919,6 +951,10 @@ $("avatar2Input").addEventListener("change",()=>{
 [
   "handle1Text",
   "handle2Text",
+  "dateText",
+  "timeText",
+  "dateSize",
+  "timeSize",
   "mainColor",
   "vsColor",
   "bubble1Size",
