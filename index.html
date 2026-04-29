@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Générateur affiche Match Officiel</title>
-
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Lobster&family=Montserrat:wght@800;900&display=swap");
 
@@ -14,16 +13,14 @@
   --main-font:"Lobster", cursive;
   --circle-font:"Montserrat", Arial, sans-serif;
 }
-
 *{box-sizing:border-box}
-
 html,body{
   margin:0;
-  background:transparent;
+  background:#0a0000;
   font-family:system-ui,Arial,sans-serif;
   color:white;
+  min-height:100vh;
 }
-
 body{
   display:flex;
   gap:28px;
@@ -31,6 +28,23 @@ body{
   justify-content:center;
   align-items:flex-start;
   padding:24px;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   EFFET DÉSINTÉGRATION ROUGE – no-export = jamais capturé par html2canvas
+   ═══════════════════════════════════════════════ */
+.disintegration-layer{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9999;
+  overflow:hidden;
+}
+.disintegration-layer canvas{
+  width:100%;
+  height:100%;
 }
 
 .panel{
@@ -41,252 +55,97 @@ body{
   padding:16px;
   box-shadow:0 0 30px rgba(180,0,0,.18);
 }
-
-h1{
-  margin:0 0 16px;
-  font-size:21px;
-}
-
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  margin-bottom:12px;
-}
-
-label{
-  font-size:12px;
-  font-weight:800;
-}
-
+h1{margin:0 0 16px;font-size:21px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+label{font-size:12px;font-weight:800;}
 input{
-  width:100%;
-  padding:10px;
-  border-radius:9px;
+  width:100%;padding:10px;border-radius:9px;
   border:1px solid rgba(255,0,0,.45);
-  background:rgba(0,0,0,.55);
-  color:white;
-  font-weight:700;
+  background:rgba(0,0,0,.55);color:white;font-weight:700;
 }
-
-input[type=color]{
-  height:42px;
-  padding:4px;
-}
-
-input[type=range]{
-  padding:0;
-}
-
-.btns{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:10px;
-}
-
+input[type=color]{height:42px;padding:4px;}
+input[type=range]{padding:0;}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 button{
-  width:100%;
-  padding:11px;
-  border-radius:9px;
-  border:1px solid rgba(255,40,40,.7);
-  cursor:pointer;
-  background:
-    radial-gradient(circle at 20% 15%,rgba(255,255,255,.16),transparent 20%),
+  width:100%;padding:11px;border-radius:9px;
+  border:1px solid rgba(255,40,40,.7);cursor:pointer;
+  background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.16),transparent 20%),
     linear-gradient(135deg,#160000 0%,#5a0000 45%,#d60000 100%);
-  color:#fff;
-  font-weight:1000;
-  box-shadow:0 0 14px rgba(190,0,0,.35);
-  transition:.18s ease;
+  color:#fff;font-weight:1000;
+  box-shadow:0 0 14px rgba(190,0,0,.35);transition:.18s ease;
 }
-
-button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 0 22px rgba(255,0,0,.55);
-  filter:brightness(1.08);
-}
-
-button.secondary{
-  background:linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);
-}
-
-button.isOff{
-  opacity:.55;
-}
-
-.chatgptBtnWrap{
-  width:100%;
-  margin-bottom:0;
-}
-
+button:hover{transform:translateY(-1px);box-shadow:0 0 22px rgba(255,0,0,.55);filter:brightness(1.08);}
+button.secondary{background:linear-gradient(135deg,#050505 0%,#240000 55%,#640000 100%);}
+button.isOff{opacity:.55;}
+.chatgptBtnWrap{width:100%;margin-bottom:0;}
 .chatgptBtnWrap a{
-  display:block;
-  width:100%;
-  padding:14px 18px;
-  border-radius:9px;
-  text-align:center;
-  text-decoration:none;
-  font-weight:1000;
-  color:#fff;
+  display:block;width:100%;padding:14px 18px;border-radius:9px;
+  text-align:center;text-decoration:none;font-weight:1000;color:#fff;
   border:1px solid rgba(255,0,0,.75);
-  background:
-    radial-gradient(circle at 18% 20%,rgba(255,255,255,.2),transparent 16%),
+  background:radial-gradient(circle at 18% 20%,rgba(255,255,255,.2),transparent 16%),
     linear-gradient(135deg,#080808 0%,#290000 42%,#b30000 100%);
-  box-shadow:0 0 20px rgba(210,0,0,.45);
-  transition:.2s ease;
+  box-shadow:0 0 20px rgba(210,0,0,.45);transition:.2s ease;
 }
+.chatgptBtnWrap a:hover{transform:translateY(-1px);box-shadow:0 0 26px rgba(255,0,0,.65);filter:brightness(1.1);}
 
-.chatgptBtnWrap a:hover{
-  transform:translateY(-1px);
-  box-shadow:0 0 26px rgba(255,0,0,.65);
-  filter:brightness(1.1);
-}
-
-.previewWrap{
-  width:min(520px,95vw);
-  display:flex;
-  justify-content:center;
-}
-
+.previewWrap{width:min(520px,95vw);display:flex;justify-content:center;}
 .poster{
-  width:var(--poster-w);
-  height:var(--poster-h);
-  position:relative;
-  overflow:hidden;
+  width:var(--poster-w);height:var(--poster-h);
+  position:relative;overflow:hidden;
   background:#060606;
   box-shadow:0 22px 60px rgba(0,0,0,.55);
   user-select:none;
 }
-
-.bg{
-  position:absolute;
-  inset:0;
-  background-size:cover;
-  background-position:center;
-  z-index:0;
-}
-
+.bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
 .overlay{
-  position:absolute;
-  inset:0;
-  z-index:1;
-  pointer-events:none;
-  background:
-    radial-gradient(circle at 50% 48%,rgba(255,80,0,.18),transparent 38%),
-    radial-gradient(circle at 50% 50%,transparent 30%,rgba(0,0,0,.72) 100%),
-    linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.08),rgba(0,0,0,.52));
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background: none;
 }
-
-.draggable{
-  position:absolute;
-  z-index:5;
-  cursor:grab;
-  touch-action:none;
-}
-
-.draggable:active{
-  cursor:grabbing;
-}
-
-.textImg{
-  display:block;
-  width:100%;
-  pointer-events:none;
-}
-
+.draggable{position:absolute;z-index:5;cursor:grab;touch-action:none;}
+.draggable:active{cursor:grabbing;}
+.textImg{display:block;width:100%;pointer-events:none;}
 #titleBox{left:25px;top:25px;width:445px}
 #dateBox{left:120px;top:150px;width:255px}
 #timeBox{left:183px;top:197px;width:125px}
 #vsBox{left:185px;top:455px;width:125px}
 #boostBox{left:95px;top:600px;width:305px}
 
-.bubble{
-  width:126px;
-  height:126px;
-}
-
+.bubble{width:126px;height:126px;}
 .bubbleInner{
-  position:absolute;
-  inset:18px;
-  border-radius:50%;
-  border:4px solid #d7a62a;
-  overflow:hidden;
-  background:#222;
+  position:absolute;inset:18px;border-radius:50%;
+  border:none;overflow:hidden;background:#222;
   box-shadow:0 10px 25px rgba(0,0,0,.65);
 }
-
-.bubbleInner img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
-.circleText{
-  position:absolute;
-  inset:0;
-  overflow:visible;
-  pointer-events:none;
-}
-
+.bubbleInner img{width:100%;height:100%;object-fit:cover;display:block;}
+.circleText{position:absolute;inset:0;overflow:visible;pointer-events:none;}
 .circleText text{
-  fill:#fff;
-  font-family:var(--circle-font);
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:.5px;
-  paint-order:stroke;
-  stroke:#000;
-  stroke-width:3px;
-  stroke-linejoin:round;
+  fill:#fff;font-family:var(--circle-font);
+  font-size:13px;font-weight:900;letter-spacing:.5px;
+  paint-order:stroke;stroke:#000;stroke-width:3px;stroke-linejoin:round;
   text-transform:uppercase;
 }
-
 #bubble1{left:45px;top:305px}
 #bubble2{left:325px;top:475px}
-
 #agencyBox{
-  position:absolute;
-  left:25px;
-  top:597px;
-  width:78px;
-  height:78px;
-  z-index:6;
-  pointer-events:none;
+  position:absolute;left:25px;top:597px;width:78px;height:78px;
+  z-index:6;pointer-events:none;
 }
-
-#agencyBox img{
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  object-fit:cover;
-  display:block;
-}
-
-.hiddenPosterElement{
-  display:none!important;
-}
-
+#agencyBox img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;}
+.hiddenPosterElement{display:none!important;}
 .grain{
-  position:absolute;
-  inset:-20%;
-  z-index:20;
-  opacity:.11;
-  pointer-events:none;
+  position:absolute;inset:-20%;z-index:20;opacity:.11;pointer-events:none;
   background-image:radial-gradient(rgba(255,255,255,.4) 1px,transparent 1px);
-  background-size:6px 6px;
-  mix-blend-mode:overlay;
+  background-size:6px 6px;mix-blend-mode:overlay;
 }
 </style>
 </head>
-
 <body>
+
+<!-- Effet désintégration rouge – DIV avec class no-export, exclue de html2canvas via ignoreElements -->
+<div class="disintegration-layer no-export" id="disintegrationLayer">
+  <canvas id="disintegrationCanvas"></canvas>
+</div>
 
 <div class="panel">
   <h1>☁️ 🔴 暁 Générateur affiche Match Officiel 暁 🔴 ☁️</h1>
@@ -297,63 +156,28 @@ button.isOff{
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Logo créa 1</label>
-      <input id="avatar1Input" type="file" accept="image/*">
-    </div>
-
-    <div class="field">
-      <label>Logo créa 2</label>
-      <input id="avatar2Input" type="file" accept="image/*">
-    </div>
+    <div class="field"><label>Logo créa 1</label><input id="avatar1Input" type="file" accept="image/*"></div>
+    <div class="field"><label>Logo créa 2</label><input id="avatar2Input" type="file" accept="image/*"></div>
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Texte bulle créa 1</label>
-      <input id="handle1Text" value="@créa 1">
-    </div>
-
-    <div class="field">
-      <label>Texte bulle créa 2</label>
-      <input id="handle2Text" value="@créa 2">
-    </div>
+    <div class="field"><label>Texte bulle créa 1</label><input id="handle1Text" value="@créa 1"></div>
+    <div class="field"><label>Texte bulle créa 2</label><input id="handle2Text" value="@créa 2"></div>
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Taille rond créa 1</label>
-      <input id="bubble1Size" type="range" min="80" max="190" value="126">
-    </div>
-
-    <div class="field">
-      <label>Taille rond créa 2</label>
-      <input id="bubble2Size" type="range" min="80" max="190" value="126">
-    </div>
+    <div class="field"><label>Taille rond créa 1</label><input id="bubble1Size" type="range" min="80" max="190" value="126"></div>
+    <div class="field"><label>Taille rond créa 2</label><input id="bubble2Size" type="range" min="80" max="190" value="126"></div>
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Taille texte bulle créa 1</label>
-      <input id="bubble1TextSize" type="range" min="8" max="28" value="13">
-    </div>
-
-    <div class="field">
-      <label>Taille texte bulle créa 2</label>
-      <input id="bubble2TextSize" type="range" min="8" max="28" value="13">
-    </div>
+    <div class="field"><label>Taille texte bulle créa 1</label><input id="bubble1TextSize" type="range" min="8" max="28" value="13"></div>
+    <div class="field"><label>Taille texte bulle créa 2</label><input id="bubble2TextSize" type="range" min="8" max="28" value="13"></div>
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Rotation texte créa 1</label>
-      <input id="bubble1Angle" type="range" min="0" max="360" value="110">
-    </div>
-
-    <div class="field">
-      <label>Rotation texte créa 2</label>
-      <input id="bubble2Angle" type="range" min="0" max="360" value="110">
-    </div>
+    <div class="field"><label>Rotation texte créa 1</label><input id="bubble1Angle" type="range" min="0" max="360" value="110"></div>
+    <div class="field"><label>Rotation texte créa 2</label><input id="bubble2Angle" type="range" min="0" max="360" value="110"></div>
   </div>
 
   <div class="field">
@@ -362,39 +186,28 @@ button.isOff{
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Couleur texte</label>
-      <input id="mainColor" type="color" value="#ffffff">
-    </div>
-
-    <div class="field">
-      <label>Couleur VS</label>
-      <input id="vsColor" type="color" value="#ff4b00">
-    </div>
+    <div class="field"><label>Couleur texte</label><input id="mainColor" type="color" value="#ffffff"></div>
+    <div class="field"><label>Couleur VS</label><input id="vsColor" type="color" value="#ff4b00"></div>
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Modifier date</label>
-      <input id="dateText" value="Jeudi 09 Avril">
-    </div>
-
-    <div class="field">
-      <label>Modifier heure</label>
-      <input id="timeText" value="21 h 30">
-    </div>
+    <div class="field"><label>Modifier date</label><input id="dateText" value="Jeudi 09 Avril"></div>
+    <div class="field"><label>Modifier heure</label><input id="timeText" value="21 h 30"></div>
   </div>
 
   <div class="row">
-    <div class="field">
-      <label>Taille date</label>
-      <input id="dateSize" type="range" min="10" max="160" value="44">
-    </div>
+    <div class="field"><label>Taille titre "Match officiel"</label><input id="titleSize" type="range" min="20" max="160" value="82"></div>
+    <div class="field"><label>Taille VS</label><input id="vsSize" type="range" min="20" max="160" value="76"></div>
+  </div>
 
-    <div class="field">
-      <label>Taille heure</label>
-      <input id="timeSize" type="range" min="10" max="160" value="44">
-    </div>
+  <div class="row">
+    <div class="field"><label>Taille date</label><input id="dateSize" type="range" min="10" max="160" value="44"></div>
+    <div class="field"><label>Taille heure</label><input id="timeSize" type="range" min="10" max="160" value="44"></div>
+  </div>
+
+  <div class="field">
+    <label>Taille texte Boost</label>
+    <input id="boostSize" type="range" min="14" max="120" value="58">
   </div>
 
   <div class="btns">
@@ -413,7 +226,7 @@ button.isOff{
 
   <div class="chatgptBtnWrap">
     <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
-      ☁️ 🔴 暁 Invoquer ChatGPT pour l’Akatsuki 暁 🔴 ☁️
+      ☁️ 🔴 暁 Invoquer ChatGPT pour l'Akatsuki 暁 🔴 ☁️
     </a>
   </div>
 </div>
@@ -429,26 +242,34 @@ button.isOff{
     <div id="vsBox" class="draggable"><img id="vsImg" class="textImg" alt=""></div>
     <div id="boostBox" class="draggable"><img id="boostImg" class="textImg" alt=""></div>
 
+    <!-- Bulle 1 : texte unique, rotation via transform sur le groupe -->
     <div id="bubble1" class="bubble draggable">
-      <svg class="circleText" viewBox="0 0 126 126">
+      <svg id="bubbleSvg1" class="circleText" viewBox="0 0 126 126">
         <defs>
           <path id="circlePath1" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
+          <clipPath id="bubbleClip1"><circle cx="63" cy="63" r="63"/></clipPath>
         </defs>
-        <text>
-          <textPath id="circleText1" href="#circlePath1" startOffset="50%" text-anchor="middle">@créa 1</textPath>
-        </text>
+        <circle id="bubbleRing1" cx="63" cy="63" r="49" fill="none" stroke="none"/>
+        <!-- Groupe rotatif : le transform-origin est le centre de la bulle -->
+        <g id="bubbleTextGroup1" style="transform-origin:63px 63px;transform:rotate(0deg)">
+          <text><textPath id="circleText1" href="#circlePath1" startOffset="25%" text-anchor="middle">@créa 1</textPath></text>
+        </g>
       </svg>
       <div class="bubbleInner"><img id="avatar1Img" alt=""></div>
     </div>
 
+    <!-- Bulle 2 : texte unique, rotation via transform sur le groupe -->
     <div id="bubble2" class="bubble draggable">
-      <svg class="circleText" viewBox="0 0 126 126">
+      <svg id="bubbleSvg2" class="circleText" viewBox="0 0 126 126">
         <defs>
           <path id="circlePath2" d="M63,63 m-49,0 a49,49 0 1,1 98,0 a49,49 0 1,1 -98,0"></path>
+          <clipPath id="bubbleClip2"><circle cx="63" cy="63" r="63"/></clipPath>
         </defs>
-        <text>
-          <textPath id="circleText2" href="#circlePath2" startOffset="50%" text-anchor="middle">@créa 2</textPath>
-        </text>
+        <circle id="bubbleRing2" cx="63" cy="63" r="49" fill="none" stroke="none"/>
+        <!-- Groupe rotatif -->
+        <g id="bubbleTextGroup2" style="transform-origin:63px 63px;transform:rotate(0deg)">
+          <text><textPath id="circleText2" href="#circlePath2" startOffset="25%" text-anchor="middle">@créa 2</textPath></text>
+        </g>
       </svg>
       <div class="bubbleInner"><img id="avatar2Img" alt=""></div>
     </div>
@@ -489,54 +310,13 @@ const defaultPositions = {
   bubble2:{x:325,y:475}
 };
 
-function fileToDataURL(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function loadFile(input,callback){
-  const file = input.files && input.files[0];
-  if(!file) return;
-  const url = await fileToDataURL(file);
-  callback(url);
-}
-
-async function localImageToDataURL(img){
-  try{
-    const response = await fetch(img.getAttribute("src"));
-    const blob = await response.blob();
-
-    return await new Promise((resolve,reject)=>{
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  }catch(e){
-    return null;
-  }
-}
-
-async function secureLocalImages(){
-  const agencyImg = $("agencyImg");
-
-  if(agencyImg && agencyImg.src && !agencyImg.src.startsWith("data:")){
-    const dataURL = await localImageToDataURL(agencyImg);
-    if(dataURL){
-      agencyImg.src = dataURL;
-    }
-  }
-}
-
+/* ─── TEXT RENDERER ───────────────────────────────────────────────────────
+   CHANGEMENT CLÉ : on utilise directement `forcedSize` sans jamais réduire.
+   maxWidth sert uniquement à dimensionner le canvas, pas à rétrécir le texte.
+   ──────────────────────────────────────────────────────────────────────── */
 function renderTextToImg(img,{
   text,
-  maxWidth,
-  startSize,
-  minSize,
+  forcedSize,       // taille imposée par le slider – JAMAIS modifiée
   color="#fff",
   strokeColor="#000",
   strokeWidth=8,
@@ -552,34 +332,18 @@ function renderTextToImg(img,{
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   const dpr = Math.max(2, window.devicePixelRatio || 2);
-  const fontFamily = getComputedStyle(document.documentElement).getPropertyValue("--main-font").trim();
+  const fontFamily = getComputedStyle(document.documentElement)
+    .getPropertyValue("--main-font").trim();
 
-  let size = startSize;
+  ctx.font = `900 ${forcedSize}px ${fontFamily}`;
+  const textW = ctx.measureText(text).width;
+  const textH = forcedSize * 1.35;
 
-  function setFont(){
-    ctx.font = `900 ${size}px ${fontFamily}`;
-  }
-
-  function measure(){
-    setFont();
-    return ctx.measureText(text).width;
-  }
-
-  let textW = measure();
-
-  while(textW > maxWidth - padX * 2 && size > minSize){
-    size -= 2;
-    textW = measure();
-  }
-
-  const textH = size * 1.35;
-
-  canvas.width = Math.ceil((textW + padX * 2) * dpr);
+  canvas.width  = Math.ceil((textW + padX * 2) * dpr);
   canvas.height = Math.ceil((textH + padY * 2) * dpr);
+  ctx.scale(dpr, dpr);
 
-  ctx.scale(dpr,dpr);
-  setFont();
-
+  ctx.font = `900 ${forcedSize}px ${fontFamily}`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.lineJoin = "round";
@@ -589,7 +353,6 @@ function renderTextToImg(img,{
   const cy = (textH + padY * 2) / 2;
 
   let fill = color;
-
   if(gradient){
     const grad = ctx.createLinearGradient(0,0,textW + padX * 2,0);
     grad.addColorStop(0,g1);
@@ -610,82 +373,14 @@ function renderTextToImg(img,{
   ctx.fillText(text,cx,cy);
 
   img.src = canvas.toDataURL("image/png");
-  img.style.width = "100%";
+  img.style.width = "auto"; // largeur naturelle, ne pas écraser avec 100%
 }
 
-async function renderAll(){
-  if(document.fonts && document.fonts.ready){
-    await document.fonts.ready;
-  }
-
-  const mainColor = $("mainColor").value;
-  const vsColor = $("vsColor").value;
-
-  renderTextToImg($("titleImg"),{
-    text:"Match officiel",
-    maxWidth:445,
-    startSize:82,
-    minSize:34,
-    color:mainColor,
-    strokeWidth:10,
-    padX:34
-  });
-
-  renderTextToImg($("dateImg"),{
-    text:$("dateText").value || "Jeudi 09 Avril",
-    maxWidth:255,
-    startSize:Number($("dateSize").value),
-    minSize:8,
-    color:mainColor,
-    strokeWidth:7
-  });
-
-  renderTextToImg($("timeImg"),{
-    text:$("timeText").value || "21 h 30",
-    maxWidth:125,
-    startSize:Number($("timeSize").value),
-    minSize:8,
-    color:mainColor,
-    strokeWidth:7
-  });
-
-  renderTextToImg($("vsImg"),{
-    text:"VS",
-    maxWidth:125,
-    startSize:76,
-    minSize:38,
-    color:vsColor,
-    strokeColor:"#000",
-    strokeWidth:8,
-    shadowColor:"rgba(255,90,0,.9)",
-    shadowBlur:14,
-    shadowY:0,
-    gradient:true,
-    g1:"#fff000",
-    g2:"#ff2400",
-    padX:18,
-    padY:18
-  });
-
-  renderTextToImg($("boostImg"),{
-    text:state.boost ? "avec boost" : "sans boost",
-    maxWidth:305,
-    startSize:58,
-    minSize:28,
-    color:mainColor,
-    strokeWidth:8,
-    padX:24
-  });
-
-  $("circleText1").textContent = $("handle1Text").value || "@créa 1";
-  $("circleText2").textContent = $("handle2Text").value || "@créa 2";
-
-  applyBubbleControls();
-  applyAgencySize();
-  applyVisibility();
-  saveSettings();
-}
-
+/* ─── BULLE : texte unique, rotation CSS sur le groupe SVG ───────────────
+   Le <g> tourne autour du centre (transform-origin: cx cy).
+   Le texte reste entier à 100% – aucun startOffset dynamique, pas de répétition.
+   Le slider "Rotation" = degrés appliqués directement au groupe.
+   ──────────────────────────────────────────────────────────────────────── */
 function applyBubbleControls(){
   const size1 = Number($("bubble1Size").value);
   const size2 = Number($("bubble2Size").value);
@@ -694,36 +389,96 @@ function applyBubbleControls(){
   const textSize1 = Number($("bubble1TextSize").value);
   const textSize2 = Number($("bubble2TextSize").value);
 
-  setBubbleSize("bubble1",size1);
-  setBubbleSize("bubble2",size2);
+  setBubbleSize("bubble1", size1, "bubbleSvg1", "circlePath1", "bubbleRing1", "bubbleTextGroup1");
+  setBubbleSize("bubble2", size2, "bubbleSvg2", "circlePath2", "bubbleRing2", "bubbleTextGroup2");
 
-  $("circleText1").setAttribute("startOffset", angle1 / 360 * 100 + "%");
-  $("circleText2").setAttribute("startOffset", angle2 / 360 * 100 + "%");
+  // Rotation CSS sur le groupe – tourne le texte autour du centre, jamais coupé
+  const cx1 = size1 / 2, cx2 = size2 / 2;
+  $("bubbleTextGroup1").style.transformOrigin = `${cx1}px ${cx1}px`;
+  $("bubbleTextGroup2").style.transformOrigin = `${cx2}px ${cx2}px`;
+  $("bubbleTextGroup1").style.transform = `rotate(${angle1}deg)`;
+  $("bubbleTextGroup2").style.transform = `rotate(${angle2}deg)`;
 
+  // Taille de la fonte directement sur le <text>
   $("circleText1").closest("text").style.fontSize = textSize1 + "px";
   $("circleText2").closest("text").style.fontSize = textSize2 + "px";
+
+  // Texte : juste la valeur brute, une seule fois
+  $("circleText1").textContent = $("handle1Text").value || "@créa 1";
+  $("circleText2").textContent = $("handle2Text").value || "@créa 2";
 }
 
-function setBubbleSize(id,size){
+function setBubbleSize(id, size, svgId, pathId, ringId, groupId){
   const el = $(id);
-  const svg = el.querySelector("svg");
+  const svg = $(svgId);
   const inner = el.querySelector(".bubbleInner");
-  const path = el.querySelector("path");
+  const path = document.getElementById(pathId);
+  const ring = document.getElementById(ringId);
 
-  el.style.width = size + "px";
+  el.style.width  = size + "px";
   el.style.height = size + "px";
-
   svg.setAttribute("viewBox",`0 0 ${size} ${size}`);
 
   const cx = size / 2;
-  const r = size * .39;
+  const r  = size * .39;
 
-  path.setAttribute(
-    "d",
+  path.setAttribute("d",
     `M${cx},${cx} m-${r},0 a${r},${r} 0 1,1 ${r*2},0 a${r},${r} 0 1,1 -${r*2},0`
   );
 
+  // Cercle de bordure fin noir : suit le rayon du chemin texte
+  if(ring){
+    ring.setAttribute("cx", cx);
+    ring.setAttribute("cy", cx);
+    ring.setAttribute("r", r);
+  }
+
   inner.style.inset = Math.round(size * .14) + "px";
+}
+
+async function renderAll(){
+  if(document.fonts && document.fonts.ready) await document.fonts.ready;
+
+  const mainColor = $("mainColor").value;
+  const vsColor   = $("vsColor").value;
+
+  renderTextToImg($("titleImg"),{
+    text:"Match officiel",
+    forcedSize: Number($("titleSize").value),
+    color:mainColor, strokeWidth:10, padX:34
+  });
+
+  renderTextToImg($("dateImg"),{
+    text: $("dateText").value || "Jeudi 09 Avril",
+    forcedSize: Number($("dateSize").value),
+    color:mainColor, strokeWidth:7
+  });
+
+  renderTextToImg($("timeImg"),{
+    text: $("timeText").value || "21 h 30",
+    forcedSize: Number($("timeSize").value),
+    color:mainColor, strokeWidth:7
+  });
+
+  renderTextToImg($("vsImg"),{
+    text:"VS",
+    forcedSize: Number($("vsSize").value),
+    color:vsColor, strokeColor:"#000", strokeWidth:8,
+    shadowColor:"rgba(255,90,0,.9)", shadowBlur:14, shadowY:0,
+    gradient:true, g1:"#fff000", g2:"#ff2400",
+    padX:18, padY:18
+  });
+
+  renderTextToImg($("boostImg"),{
+    text: state.boost ? "avec boost" : "sans boost",
+    forcedSize: Number($("boostSize").value),
+    color:mainColor, strokeWidth:8, padX:24
+  });
+
+  applyBubbleControls();
+  applyAgencySize();
+  applyVisibility();
+  saveSettings();
 }
 
 function applyAgencySize(){
@@ -731,11 +486,10 @@ function applyAgencySize(){
   const maxSize = POSTER_H - AGENCY_MARGIN * 2;
   const size = Math.min(requestedSize, maxSize);
   const box = $("agencyBox");
-
-  box.style.width = size + "px";
+  box.style.width  = size + "px";
   box.style.height = size + "px";
-  box.style.left = AGENCY_MARGIN + "px";
-  box.style.top = Math.max(AGENCY_MARGIN, POSTER_H - size - AGENCY_MARGIN) + "px";
+  box.style.left   = AGENCY_MARGIN + "px";
+  box.style.top    = Math.max(AGENCY_MARGIN, POSTER_H - size - AGENCY_MARGIN) + "px";
 }
 
 function applyVisibility(){
@@ -745,314 +499,335 @@ function applyVisibility(){
   $("vsBox").classList.toggle("hiddenPosterElement",!state.showVs);
   $("bubble1").classList.toggle("hiddenPosterElement",!state.showBubbles);
   $("bubble2").classList.toggle("hiddenPosterElement",!state.showBubbles);
-
   updateToggleButton("toggleTitleBtn","Titre",state.showTitle);
   updateToggleButton("toggleDateBtn","Date",state.showDate);
   updateToggleButton("toggleTimeBtn","Heure",state.showTime);
   updateToggleButton("toggleVsBtn","VS",state.showVs);
   updateToggleButton("toggleBubblesBtn","Bulles",state.showBubbles);
-
   $("boostToggleBtn").textContent = state.boost ? "Avec Boost" : "Sans Boost";
 }
 
 function updateToggleButton(id,label,on){
   const btn = $(id);
-  btn.textContent = `${label} : ${on ? "ON" : "OFF"}`;
+  btn.textContent = `${label} : ${on?"ON":"OFF"}`;
   btn.classList.toggle("isOff",!on);
 }
 
+/* ─── PERSISTENCE ────────────────────────────────────────────────────────── */
 function savePositions(){
-  const data = {};
+  const data={};
   document.querySelectorAll(".draggable").forEach(el=>{
-    data[el.id] = {
-      x:parseFloat(el.style.left) || el.offsetLeft,
-      y:parseFloat(el.style.top) || el.offsetTop
-    };
+    data[el.id]={x:parseFloat(el.style.left)||el.offsetLeft, y:parseFloat(el.style.top)||el.offsetTop};
   });
   localStorage.setItem("matchPosterPositions",JSON.stringify(data));
 }
 
 function restorePositions(){
   let data = defaultPositions;
-
-  try{
-    data = {
-      ...defaultPositions,
-      ...(JSON.parse(localStorage.getItem("matchPosterPositions") || "{}"))
-    };
-  }catch(e){}
-
+  try{ data={...defaultPositions,...(JSON.parse(localStorage.getItem("matchPosterPositions")||"{}"))};} catch(e){}
   Object.entries(data).forEach(([id,pos])=>{
-    const el = $(id);
-    if(!el) return;
-    el.style.left = pos.x + "px";
-    el.style.top = pos.y + "px";
+    const el=$(id); if(!el) return;
+    el.style.left=pos.x+"px"; el.style.top=pos.y+"px";
   });
 }
 
 function saveSettings(){
-  const data = {
-    handle1:$("handle1Text").value,
-    handle2:$("handle2Text").value,
-    dateText:$("dateText").value,
-    timeText:$("timeText").value,
-    dateSize:$("dateSize").value,
-    timeSize:$("timeSize").value,
-    mainColor:$("mainColor").value,
-    vsColor:$("vsColor").value,
-    bubble1Size:$("bubble1Size").value,
-    bubble2Size:$("bubble2Size").value,
-    bubble1TextSize:$("bubble1TextSize").value,
-    bubble2TextSize:$("bubble2TextSize").value,
-    bubble1Angle:$("bubble1Angle").value,
-    bubble2Angle:$("bubble2Angle").value,
+  const data={
+    handle1:$("handle1Text").value, handle2:$("handle2Text").value,
+    dateText:$("dateText").value,   timeText:$("timeText").value,
+    titleSize:$("titleSize").value, vsSize:$("vsSize").value,
+    dateSize:$("dateSize").value,   timeSize:$("timeSize").value,
+    boostSize:$("boostSize").value,
+    mainColor:$("mainColor").value, vsColor:$("vsColor").value,
+    bubble1Size:$("bubble1Size").value, bubble2Size:$("bubble2Size").value,
+    bubble1TextSize:$("bubble1TextSize").value, bubble2TextSize:$("bubble2TextSize").value,
+    bubble1Angle:$("bubble1Angle").value, bubble2Angle:$("bubble2Angle").value,
     agencySize:$("agencySize").value,
     state
   };
-
   localStorage.setItem("matchPosterSettings",JSON.stringify(data));
 }
 
 function restoreSettings(){
   try{
-    const data = JSON.parse(localStorage.getItem("matchPosterSettings") || "{}");
-
-    if(data.handle1) $("handle1Text").value = data.handle1;
-    if(data.handle2) $("handle2Text").value = data.handle2;
-    if(data.dateText) $("dateText").value = data.dateText;
-    if(data.timeText) $("timeText").value = data.timeText;
-    if(data.dateSize) $("dateSize").value = data.dateSize;
-    if(data.timeSize) $("timeSize").value = data.timeSize;
-    if(data.mainColor) $("mainColor").value = data.mainColor;
-    if(data.vsColor) $("vsColor").value = data.vsColor;
-    if(data.bubble1Size) $("bubble1Size").value = data.bubble1Size;
-    if(data.bubble2Size) $("bubble2Size").value = data.bubble2Size;
-    if(data.bubble1TextSize) $("bubble1TextSize").value = data.bubble1TextSize;
-    if(data.bubble2TextSize) $("bubble2TextSize").value = data.bubble2TextSize;
-    if(data.bubble1Angle) $("bubble1Angle").value = data.bubble1Angle;
-    if(data.bubble2Angle) $("bubble2Angle").value = data.bubble2Angle;
-    if(data.agencySize) $("agencySize").value = data.agencySize;
-
-    if(data.state){
-      Object.assign(state,data.state);
-    }
+    const d=JSON.parse(localStorage.getItem("matchPosterSettings")||"{}");
+    if(d.handle1) $("handle1Text").value=d.handle1;
+    if(d.handle2) $("handle2Text").value=d.handle2;
+    if(d.dateText) $("dateText").value=d.dateText;
+    if(d.timeText) $("timeText").value=d.timeText;
+    if(d.titleSize) $("titleSize").value=d.titleSize;
+    if(d.vsSize) $("vsSize").value=d.vsSize;
+    if(d.dateSize) $("dateSize").value=d.dateSize;
+    if(d.timeSize) $("timeSize").value=d.timeSize;
+    if(d.boostSize) $("boostSize").value=d.boostSize;
+    if(d.mainColor) $("mainColor").value=d.mainColor;
+    if(d.vsColor) $("vsColor").value=d.vsColor;
+    if(d.bubble1Size) $("bubble1Size").value=d.bubble1Size;
+    if(d.bubble2Size) $("bubble2Size").value=d.bubble2Size;
+    if(d.bubble1TextSize) $("bubble1TextSize").value=d.bubble1TextSize;
+    if(d.bubble2TextSize) $("bubble2TextSize").value=d.bubble2TextSize;
+    if(d.bubble1Angle) $("bubble1Angle").value=d.bubble1Angle;
+    if(d.bubble2Angle) $("bubble2Angle").value=d.bubble2Angle;
+    if(d.agencySize) $("agencySize").value=d.agencySize;
+    if(d.state) Object.assign(state,d.state);
   }catch(e){}
 }
 
+/* ─── DRAG ───────────────────────────────────────────────────────────────── */
 function makeDraggable(el){
-  let startX = 0;
-  let startY = 0;
-  let baseX = 0;
-  let baseY = 0;
-
+  let startX=0,startY=0,baseX=0,baseY=0;
   el.addEventListener("pointerdown",e=>{
-    e.preventDefault();
-    el.setPointerCapture(e.pointerId);
-
-    startX = e.clientX;
-    startY = e.clientY;
-    baseX = parseFloat(el.style.left) || el.offsetLeft;
-    baseY = parseFloat(el.style.top) || el.offsetTop;
-
-    el.style.zIndex = 30;
+    e.preventDefault(); el.setPointerCapture(e.pointerId);
+    startX=e.clientX; startY=e.clientY;
+    baseX=parseFloat(el.style.left)||el.offsetLeft;
+    baseY=parseFloat(el.style.top)||el.offsetTop;
+    el.style.zIndex=30;
   });
-
   el.addEventListener("pointermove",e=>{
     if(!el.hasPointerCapture(e.pointerId)) return;
-
-    const poster = $("poster");
-    const rect = poster.getBoundingClientRect();
-    const scaleX = POSTER_W / rect.width;
-    const scaleY = POSTER_H / rect.height;
-
-    let x = baseX + (e.clientX - startX) * scaleX;
-    let y = baseY + (e.clientY - startY) * scaleY;
-
-    x = Math.max(-120,Math.min(POSTER_W - 20,x));
-    y = Math.max(-120,Math.min(POSTER_H - 20,y));
-
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+    const rect=$("poster").getBoundingClientRect();
+    const sx=POSTER_W/rect.width, sy=POSTER_H/rect.height;
+    let x=baseX+(e.clientX-startX)*sx;
+    let y=baseY+(e.clientY-startY)*sy;
+    x=Math.max(-120,Math.min(POSTER_W-20,x));
+    y=Math.max(-120,Math.min(POSTER_H-20,y));
+    el.style.left=x+"px"; el.style.top=y+"px";
   });
-
   el.addEventListener("pointerup",e=>{
-    if(el.hasPointerCapture(e.pointerId)){
-      el.releasePointerCapture(e.pointerId);
-    }
-
-    el.style.zIndex = "";
-    savePositions();
+    if(el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
+    el.style.zIndex=""; savePositions();
   });
 }
 
+/* ─── DOWNLOAD ───────────────────────────────────────────────────────────── */
+async function fileToDataURL(file){
+  return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file);});
+}
+async function loadFile(input,cb){const f=input.files&&input.files[0];if(!f)return;cb(await fileToDataURL(f));}
+async function localImageToDataURL(img){
+  try{
+    const r=await fetch(img.getAttribute("src"));
+    const b=await r.blob();
+    return new Promise((res,rej)=>{const rd=new FileReader();rd.onload=()=>res(rd.result);rd.onerror=rej;rd.readAsDataURL(b);});
+  }catch(e){return null;}
+}
+async function secureLocalImages(){
+  const ai=$("agencyImg");
+  if(ai&&ai.src&&!ai.src.startsWith("data:")){const d=await localImageToDataURL(ai);if(d) ai.src=d;}
+}
 async function waitForImages(container){
-  const images = Array.from(container.querySelectorAll("img"));
-
-  await Promise.all(images.map(img=>{
+  await Promise.all(Array.from(container.querySelectorAll("img")).map(img=>{
     if(!img.src) return Promise.resolve();
-
-    if(img.complete && img.naturalWidth > 0){
-      return Promise.resolve();
-    }
-
-    return new Promise(resolve=>{
-      img.addEventListener("load",resolve,{once:true});
-      img.addEventListener("error",resolve,{once:true});
-    });
+    if(img.complete&&img.naturalWidth>0) return Promise.resolve();
+    return new Promise(res=>{img.addEventListener("load",res,{once:true});img.addEventListener("error",res,{once:true});});
   }));
 }
-
 function downloadCanvas(canvas,filename){
   try{
     canvas.toBlob(blob=>{
-      if(blob){
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-
-        setTimeout(()=>{
-          a.remove();
-          URL.revokeObjectURL(url);
-        },500);
-      }else{
-        const dataURL = canvas.toDataURL("image/png");
-        const win = window.open();
-        win.document.write(`<img src="${dataURL}" style="width:100%">`);
-      }
+      if(blob){const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url);},500);}
+      else{const w=window.open();w.document.write(`<img src="${canvas.toDataURL()}" style="width:100%">`);}
     },"image/png");
-  }catch(e){
-    const dataURL = canvas.toDataURL("image/png");
-    const win = window.open();
-    win.document.write(`<img src="${dataURL}" style="width:100%">`);
-  }
+  }catch(e){const w=window.open();w.document.write(`<img src="${canvas.toDataURL()}" style="width:100%">`);}
 }
 
-$("bgInput").addEventListener("change",()=>{
-  loadFile($("bgInput"),url=>{
-    $("bg").style.backgroundImage = `url("${url}")`;
-  });
-});
-
-$("avatar1Input").addEventListener("change",()=>{
-  loadFile($("avatar1Input"),url=>{
-    $("avatar1Img").src = url;
-  });
-});
-
-$("avatar2Input").addEventListener("change",()=>{
-  loadFile($("avatar2Input"),url=>{
-    $("avatar2Img").src = url;
-  });
-});
+/* ─── ÉVÉNEMENTS ─────────────────────────────────────────────────────────── */
+$("bgInput").addEventListener("change",()=>loadFile($("bgInput"),url=>{ $("bg").style.backgroundImage=`url("${url}")`; }));
+$("avatar1Input").addEventListener("change",()=>loadFile($("avatar1Input"),url=>{ $("avatar1Img").src=url; }));
+$("avatar2Input").addEventListener("change",()=>loadFile($("avatar2Input"),url=>{ $("avatar2Img").src=url; }));
 
 [
-  "handle1Text",
-  "handle2Text",
-  "dateText",
-  "timeText",
-  "dateSize",
-  "timeSize",
-  "mainColor",
-  "vsColor",
-  "bubble1Size",
-  "bubble2Size",
-  "bubble1TextSize",
-  "bubble2TextSize",
-  "bubble1Angle",
-  "bubble2Angle",
-  "agencySize"
-].forEach(id=>{
-  $(id).addEventListener("input",renderAll);
-});
+  "handle1Text","handle2Text","dateText","timeText",
+  "titleSize","vsSize","dateSize","timeSize","boostSize",
+  "mainColor","vsColor",
+  "bubble1Size","bubble2Size","bubble1TextSize","bubble2TextSize",
+  "bubble1Angle","bubble2Angle","agencySize"
+].forEach(id=>{ $(id).addEventListener("input",renderAll); });
 
-$("toggleTitleBtn").addEventListener("click",()=>{
-  state.showTitle = !state.showTitle;
-  renderAll();
-});
-
-$("toggleDateBtn").addEventListener("click",()=>{
-  state.showDate = !state.showDate;
-  renderAll();
-});
-
-$("toggleTimeBtn").addEventListener("click",()=>{
-  state.showTime = !state.showTime;
-  renderAll();
-});
-
-$("toggleVsBtn").addEventListener("click",()=>{
-  state.showVs = !state.showVs;
-  renderAll();
-});
-
-$("toggleBubblesBtn").addEventListener("click",()=>{
-  state.showBubbles = !state.showBubbles;
-  renderAll();
-});
-
-$("boostToggleBtn").addEventListener("click",()=>{
-  state.boost = !state.boost;
-  renderAll();
-});
+$("toggleTitleBtn").addEventListener("click",()=>{ state.showTitle=!state.showTitle; renderAll(); });
+$("toggleDateBtn").addEventListener("click",()=>{ state.showDate=!state.showDate; renderAll(); });
+$("toggleTimeBtn").addEventListener("click",()=>{ state.showTime=!state.showTime; renderAll(); });
+$("toggleVsBtn").addEventListener("click",()=>{ state.showVs=!state.showVs; renderAll(); });
+$("toggleBubblesBtn").addEventListener("click",()=>{ state.showBubbles=!state.showBubbles; renderAll(); });
+$("boostToggleBtn").addEventListener("click",()=>{ state.boost=!state.boost; renderAll(); });
 
 $("downloadBtn").addEventListener("click",async()=>{
-  const btn = $("downloadBtn");
-  btn.textContent = "Préparation...";
-  btn.disabled = true;
-
+  const btn=$("downloadBtn"); btn.textContent="Préparation..."; btn.disabled=true;
   try{
-    const poster = $("poster");
+    await renderAll(); await secureLocalImages();
+    if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+    await waitForImages($("poster"));
 
-    await renderAll();
-    await secureLocalImages();
+    // html2canvas ne gère pas transform CSS sur SVG <g>
+    // → on convertit temporairement en attribut SVG natif avant la capture
+    const groups = [
+      {el:$("bubbleTextGroup1"), angle:Number($("bubble1Angle").value), size:Number($("bubble1Size").value)},
+      {el:$("bubbleTextGroup2"), angle:Number($("bubble2Angle").value), size:Number($("bubble2Size").value)}
+    ];
+    groups.forEach(({el,angle,size})=>{
+      const cx = size/2;
+      el.style.transform = "none";
+      el.style.transformOrigin = "";
+      el.setAttribute("transform", `rotate(${angle} ${cx} ${cx})`);
+    });
 
-    if(document.fonts && document.fonts.ready){
-      await document.fonts.ready;
-    }
+    const canvas=await html2canvas($("poster"),{
+      backgroundColor:null, useCORS:false, allowTaint:true, scale:3,
+      width:POSTER_W, height:POSTER_H,
+      scrollX:0, scrollY:0, windowWidth:POSTER_W, windowHeight:POSTER_H,
+      ignoreElements: el => el.classList && el.classList.contains("no-export")
+    });
 
-    await waitForImages(poster);
-
-    const canvas = await html2canvas(poster,{
-      backgroundColor:null,
-      useCORS:false,
-      allowTaint:true,
-      scale:3,
-      width:POSTER_W,
-      height:POSTER_H,
-      scrollX:0,
-      scrollY:0,
-      windowWidth:POSTER_W,
-      windowHeight:POSTER_H
+    // Restaurer le CSS après capture
+    groups.forEach(({el,angle,size})=>{
+      const cx = size/2;
+      el.removeAttribute("transform");
+      el.style.transformOrigin = `${cx}px ${cx}px`;
+      el.style.transform = `rotate(${angle}deg)`;
     });
 
     downloadCanvas(canvas,"affiche-match-officiel.png");
-
   }catch(err){
     console.error(err);
-    alert("Erreur export PNG. Vérifie que AkaTsuki.png est accessible dans le même dossier que ce fichier HTML.");
+    alert("Erreur export PNG.");
   }finally{
-    btn.textContent = "Télécharger PNG";
-    btn.disabled = false;
+    btn.textContent="Télécharger PNG"; btn.disabled=false;
   }
 });
 
 $("resetBtn").addEventListener("click",()=>{
   localStorage.removeItem("matchPosterPositions");
-  restorePositions();
-  applyAgencySize();
+  restorePositions(); applyAgencySize();
 });
 
 document.querySelectorAll(".draggable").forEach(makeDraggable);
+restoreSettings(); restorePositions(); applyAgencySize(); secureLocalImages(); renderAll();
 
-restoreSettings();
-restorePositions();
-applyAgencySize();
-secureLocalImages();
-renderAll();
+/* ═══════════════════════════════════════════════════════════════════════════
+   EFFET DÉSINTÉGRATION ROUGE
+   Canvas fixé sur toute la page, fragments qui s'éparpillent depuis les bords,
+   jamais capturé par html2canvas grâce à ignoreElements + class no-export
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function initDisintegration(){
+  const canvas = $("disintegrationCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let W, H, particles = [];
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  // Palettes rouge/feu
+  const REDS = [
+    [255,  0,  0],
+    [220, 20,  0],
+    [180,  0,  0],
+    [255, 60,  0],
+    [255,100, 30],
+    [140,  0,  0],
+    [255, 30, 30],
+  ];
+
+  function rand(a,b){ return a + Math.random()*(b-a); }
+  function randInt(a,b){ return Math.floor(rand(a,b+1)); }
+  function pick(arr){ return arr[randInt(0,arr.length-1)]; }
+
+  // Un fragment = petit rectangle/carré irrégulier qui éclate depuis un bord
+  class Fragment {
+    constructor(){
+      this.reset();
+    }
+    reset(){
+      // Choisir un bord d'origine : 0=haut, 1=droite, 2=bas, 3=gauche
+      const side = randInt(0,3);
+      const margin = rand(0, 80); // profondeur depuis le bord
+
+      if(side===0){       // haut
+        this.x = rand(0,W); this.y = rand(-margin, margin);
+        this.vx = rand(-1,1); this.vy = rand(0.3,2.5);
+      } else if(side===1){ // droite
+        this.x = rand(W-margin,W+margin); this.y = rand(0,H);
+        this.vx = rand(-2.5,-0.3); this.vy = rand(-1,1);
+      } else if(side===2){ // bas
+        this.x = rand(0,W); this.y = rand(H-margin,H+margin);
+        this.vx = rand(-1,1); this.vy = rand(-2.5,-0.3);
+      } else {             // gauche
+        this.x = rand(-margin,margin); this.y = rand(0,H);
+        this.vx = rand(0.3,2.5); this.vy = rand(-1,1);
+      }
+
+      // Taille & forme : fragments rectangulaires effilés style verre brisé
+      this.w  = rand(3, 18);
+      this.h  = rand(2, 10);
+      this.rotation = rand(0, Math.PI*2);
+      this.rotSpeed = rand(-0.06, 0.06);
+
+      const col = pick(REDS);
+      this.alpha = rand(0.55, 0.95);
+      this.fade  = rand(0.005, 0.018);
+      this.color = col;
+
+      // Légère gravité & friction
+      this.gravity = rand(0.01, 0.04);
+      this.friction = rand(0.985, 0.999);
+    }
+
+    update(){
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += this.gravity;
+      this.vx *= this.friction;
+      this.vy *= this.friction;
+      this.rotation += this.rotSpeed;
+      this.alpha -= this.fade;
+      if(this.alpha <= 0) this.reset();
+    }
+
+    draw(){
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+
+      // Lueur rouge
+      ctx.shadowColor = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},0.8)`;
+      ctx.shadowBlur  = 6;
+
+      ctx.fillStyle = `rgba(${this.color[0]},${this.color[1]},${this.color[2]},1)`;
+      ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+
+      ctx.restore();
+    }
+  }
+
+  // Créer les fragments initiaux en décalant leur alpha pour éviter l'apparition simultanée
+  const COUNT = 120;
+  for(let i=0; i<COUNT; i++){
+    const p = new Fragment();
+    p.alpha = rand(0, 0.9); // démarrage aléatoire dans leur cycle
+    particles.push(p);
+  }
+
+  // Ajouter des "éclats" plus grands et rares sur les coins
+  for(let i=0; i<20; i++){
+    const p = new Fragment();
+    p.w = rand(8,28); p.h = rand(4,14);
+    p.fade = rand(0.003,0.01);
+    p.alpha = rand(0,0.7);
+    particles.push(p);
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{ p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
 </script>
-
 </body>
 </html>
